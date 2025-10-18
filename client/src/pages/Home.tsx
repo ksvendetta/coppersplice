@@ -14,7 +14,8 @@ import { CableCard } from "@/components/CableCard";
 import { CableForm } from "@/components/CableForm";
 import { CableVisualization } from "@/components/CableVisualization";
 import { CircuitManagement } from "@/components/CircuitManagement";
-import { Plus, Cable as CableIcon, Network, Workflow } from "lucide-react";
+import { Plus, Cable as CableIcon, Workflow } from "lucide-react";
+import spliceLogo from "@assets/image_1760814059676.png";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -124,7 +125,7 @@ export default function Home() {
       <header className="border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
-            <Network className="h-6 w-6 text-primary" />
+            <img src={spliceLogo} alt="Splice" className="h-6 w-6 invert dark:invert-0" />
             <h1 className="text-xl font-semibold">Fiber Splice Manager</h1>
           </div>
         </div>
