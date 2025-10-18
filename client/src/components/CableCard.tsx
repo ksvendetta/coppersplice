@@ -59,15 +59,9 @@ export function CableCard({ cable, isSelected, onSelect, onEdit, onDelete }: Cab
       <CardContent>
         <div className="flex gap-4 text-xs">
           <div>
-            <span className="text-muted-foreground">Fibers:</span>
+            <span className="text-muted-foreground">Cable Size:</span>
             <span className="ml-1 font-mono font-medium" data-testid={`text-cable-fiber-count-${cable.id}`}>
               {cable.fiberCount}
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Ribbon:</span>
-            <span className="ml-1 font-mono font-medium" data-testid={`text-cable-ribbon-size-${cable.id}`}>
-              {cable.ribbonSize}
             </span>
           </div>
         </div>

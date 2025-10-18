@@ -24,7 +24,7 @@ import { CableCard } from "@/components/CableCard";
 import { CableForm } from "@/components/CableForm";
 import { CableVisualization } from "@/components/CableVisualization";
 import { CircuitManagement } from "@/components/CircuitManagement";
-import { Plus, Cable as CableIcon, Network, Search } from "lucide-react";
+import { Plus, Cable as CableIcon, Network } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -44,7 +44,6 @@ export default function Home() {
   const [cableDialogOpen, setCableDialogOpen] = useState(false);
   const [editingCable, setEditingCable] = useState<Cable | null>(null);
   const [deletingCable, setDeletingCable] = useState<Cable | null>(null);
-  const [cableSearchTerm, setCableSearchTerm] = useState("");
 
   const { data: cables = [], isLoading: cablesLoading } = useQuery<Cable[]>({
     queryKey: ["/api/cables"],
@@ -110,15 +109,6 @@ export default function Home() {
     }
   };
 
-  const filteredCables = useMemo(() => {
-    if (!cableSearchTerm) return cables;
-    const searchLower = cableSearchTerm.toLowerCase();
-    return cables.filter(
-      (cable) =>
-        cable.name.toLowerCase().includes(searchLower) ||
-        cable.type.toLowerCase().includes(searchLower)
-    );
-  }, [cables, cableSearchTerm]);
 
   const splicedCircuits = useMemo(() => {
     return allCircuits.filter((circuit) => {
@@ -128,9 +118,6 @@ export default function Home() {
   }, [allCircuits, cables]);
 
   const selectedCable = cables.find((c) => c.id === selectedCableId);
-
-  const feedCables = filteredCables.filter((c) => c.type === "Feed");
-  const distributionCables = filteredCables.filter((c) => c.type === "Distribution");
 
   return (
     <div className="min-h-screen bg-background">
@@ -174,18 +161,7 @@ export default function Home() {
                   </Button>
                 </div>
 
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search cables by name or type..."
-                    value={cableSearchTerm}
-                    onChange={(e) => setCableSearchTerm(e.target.value)}
-                    className="pl-10"
-                    data-testid="input-search-cables"
-                  />
-                </div>
-
-                <ScrollArea className="h-[560px] pr-4">
+                <ScrollArea className="h-[600px] pr-4">
                   <div className="space-y-2">
                     {cablesLoading ? (
                       <div className="text-center py-12 text-muted-foreground">Loading cables...</div>
@@ -193,12 +169,8 @@ export default function Home() {
                       <div className="text-center py-12 text-muted-foreground" data-testid="text-no-cables">
                         No cables yet. Add a cable to get started.
                       </div>
-                    ) : filteredCables.length === 0 ? (
-                      <div className="text-center py-12 text-muted-foreground" data-testid="text-no-results">
-                        No cables match your search.
-                      </div>
                     ) : (
-                      filteredCables.map((cable) => (
+                      cables.map((cable) => (
                         <CableCard
                           key={cable.id}
                           cable={cable}

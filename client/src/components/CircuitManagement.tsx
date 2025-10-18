@@ -173,6 +173,61 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     setEditingCircuitValue("");
   };
 
+  // Helper function to parse circuit ID and check for duplicates
+  const parseAndCheckCircuitId = (newCircuitId: string, excludeCircuitId?: string) => {
+    const parts = newCircuitId.split(',');
+    if (parts.length !== 2) {
+      return { valid: false, error: 'Invalid circuit ID format. Expected format: "prefix,start-end"' };
+    }
+    
+    const newPrefix = parts[0].trim();
+    const newRange = parts[1].trim();
+    const newRangeParts = newRange.split('-');
+    
+    if (newRangeParts.length !== 2) {
+      return { valid: false, error: 'Invalid range format. Expected format: "start-end"' };
+    }
+    
+    const newStart = parseInt(newRangeParts[0]);
+    const newEnd = parseInt(newRangeParts[1]);
+    
+    if (isNaN(newStart) || isNaN(newEnd)) {
+      return { valid: false, error: 'Range values must be numbers' };
+    }
+    
+    // Check for overlap with existing circuits
+    for (const circuit of circuits) {
+      if (excludeCircuitId && circuit.id === excludeCircuitId) continue;
+      
+      const existingParts = circuit.circuitId.split(',');
+      if (existingParts.length !== 2) continue;
+      
+      const existingPrefix = existingParts[0].trim();
+      const existingRange = existingParts[1].trim();
+      const existingRangeParts = existingRange.split('-');
+      
+      if (existingRangeParts.length !== 2) continue;
+      
+      const existingStart = parseInt(existingRangeParts[0]);
+      const existingEnd = parseInt(existingRangeParts[1]);
+      
+      if (isNaN(existingStart) || isNaN(existingEnd)) continue;
+      
+      // Check if same prefix
+      if (newPrefix === existingPrefix) {
+        // Check for overlap: ranges overlap if newStart <= existingEnd AND newEnd >= existingStart
+        if (newStart <= existingEnd && newEnd >= existingStart) {
+          return { 
+            valid: false, 
+            error: `Circuit ID "${newCircuitId}" overlaps with existing circuit "${circuit.circuitId}". Ranges cannot overlap for the same prefix.` 
+          };
+        }
+      }
+    }
+    
+    return { valid: true };
+  };
+
   const handleSaveEdit = (circuitId: string) => {
     if (!editingCircuitValue.trim()) {
       toast({
@@ -182,6 +237,17 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       });
       return;
     }
+    
+    const validation = parseAndCheckCircuitId(editingCircuitValue.trim(), circuitId);
+    if (!validation.valid) {
+      toast({
+        title: "Invalid Circuit ID",
+        description: validation.error,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     updateCircuitIdMutation.mutate({ id: circuitId, circuitId: editingCircuitValue });
   };
 
@@ -190,6 +256,16 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       toast({
         title: "Missing circuit ID",
         description: "Please enter a circuit ID (e.g., lg,33-36)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const validation = parseAndCheckCircuitId(circuitId.trim());
+    if (!validation.valid) {
+      toast({
+        title: "Invalid Circuit ID",
+        description: validation.error,
         variant: "destructive",
       });
       return;
@@ -246,7 +322,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
         <CardTitle className="text-lg">Circuit Details</CardTitle>
         <div className="flex items-center gap-2">
           {validationStatus ? (
-            <Badge variant="default" className="gap-1" data-testid="badge-validation-pass">
+            <Badge className="gap-1 bg-green-600 hover:bg-green-700" data-testid="badge-validation-pass">
               <CheckCircle2 className="h-3 w-3" />
               Pass
             </Badge>
@@ -256,8 +332,8 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
               Fail
             </Badge>
           )}
-          <span className="text-sm text-muted-foreground" data-testid="text-fiber-count">
-            {totalAssignedFibers} / {cable.fiberCount} fibers
+          <span className="text-sm text-muted-foreground" data-testid="text-cable-size">
+            Cable Size: {cable.fiberCount}
           </span>
         </div>
       </CardHeader>
