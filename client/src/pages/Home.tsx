@@ -406,13 +406,13 @@ export default function Home() {
                                       <TableCell className="text-center font-mono text-sm">{feedCable.name} - {feedCable.fiberCount}</TableCell>
                                       <TableCell className="text-center">
                                         <div className={`inline-block px-3 py-1 rounded border-2 border-black ${ribbonColor.bg} ${ribbonColor.text} font-mono font-semibold`}>
-                                          {feedRibbon}
+                                          R{feedRibbon}
                                         </div>
                                       </TableCell>
                                       <TableCell className="text-center font-mono font-semibold">{circuitPrefix},{circuitStart}-{circuitEnd}</TableCell>
                                       <TableCell className="text-center">
                                         <div className={`inline-block px-3 py-1 rounded border-2 border-black ${ribbonColor.bg} ${ribbonColor.text} font-mono font-semibold`}>
-                                          {distRibbon}
+                                          R{distRibbon}
                                         </div>
                                       </TableCell>
                                       <TableCell className="text-center font-mono text-sm">{distributionCable?.name} - {distributionCable?.fiberCount}</TableCell>
@@ -440,7 +440,7 @@ export default function Home() {
                                   fiberRows.push(
                                     <TableRow key={`${circuit.id}-fiber-${i}`} className={rowBgColor} data-testid={`row-fiber-${circuit.id}-${i}`}>
                                       <TableCell className="text-center font-mono text-sm">{feedCable.name} - {feedCable.fiberCount}</TableCell>
-                                      <TableCell className="text-center font-mono font-semibold">{feedRibbon}</TableCell>
+                                      <TableCell className="text-center font-mono font-semibold">R{feedRibbon}</TableCell>
                                       <TableCell className="text-center">
                                         <div className={`inline-block px-3 py-1 rounded border-2 border-black ${feedColor.bg} ${feedColor.text} font-mono font-semibold`}>
                                           {feedStrand}
@@ -452,7 +452,7 @@ export default function Home() {
                                           {distStrand}
                                         </div>
                                       </TableCell>
-                                      <TableCell className="text-center font-mono font-semibold">{distRibbon}</TableCell>
+                                      <TableCell className="text-center font-mono font-semibold">R{distRibbon}</TableCell>
                                       <TableCell className="text-center font-mono text-sm">{distributionCable?.name} - {distributionCable?.fiberCount}</TableCell>
                                     </TableRow>
                                   );
