@@ -24,7 +24,7 @@ import { CableCard } from "@/components/CableCard";
 import { CableForm } from "@/components/CableForm";
 import { CableVisualization } from "@/components/CableVisualization";
 import { CircuitManagement } from "@/components/CircuitManagement";
-import { Plus, Cable as CableIcon, Workflow, RotateCcw } from "lucide-react";
+import { Plus, Cable as CableIcon, Workflow, FilePlus, History } from "lucide-react";
 import spliceLogo from "@assets/image_1760814059676.png";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -38,13 +38,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { HistoryDialog } from "@/components/HistoryDialog";
 
 export default function Home() {
   const { toast } = useToast();
   const [selectedCableId, setSelectedCableId] = useState<string | null>(null);
   const [cableDialogOpen, setCableDialogOpen] = useState(false);
   const [editingCable, setEditingCable] = useState<Cable | null>(null);
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [startNewDialogOpen, setStartNewDialogOpen] = useState(false);
+  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
 
   const { data: cables = [], isLoading: cablesLoading } = useQuery<Cable[]>({
     queryKey: ["/api/cables"],
@@ -108,19 +110,34 @@ export default function Home() {
     },
   });
 
-  const resetDataMutation = useMutation({
+  const saveMutation = useMutation({
     mutationFn: async () => {
+      return await apiRequest("POST", "/api/saves", {});
+    },
+    onSuccess: () => {
+      toast({ title: "Project saved successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to save project", variant: "destructive" });
+    },
+  });
+
+  const startNewMutation = useMutation({
+    mutationFn: async () => {
+      // First save the current state
+      await apiRequest("POST", "/api/saves", {});
+      // Then reset all data
       return await apiRequest("DELETE", "/api/reset", undefined);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cables"] });
       queryClient.invalidateQueries({ queryKey: ["/api/circuits"] });
       setSelectedCableId(null);
-      setResetDialogOpen(false);
-      toast({ title: "All data has been reset successfully" });
+      setStartNewDialogOpen(false);
+      toast({ title: "Current project saved. Starting new project." });
     },
     onError: () => {
-      toast({ title: "Failed to reset data", variant: "destructive" });
+      toast({ title: "Failed to start new project", variant: "destructive" });
     },
   });
 
@@ -163,15 +180,26 @@ export default function Home() {
               </div>
               <h1 className="text-xl font-semibold">Fiber Splice Manager</h1>
             </div>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setResetDialogOpen(true)}
-              data-testid="button-reset"
-            >
-              <RotateCcw className="h-4 w-4 mr-2" />
-              Reset
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setHistoryDialogOpen(true)}
+                data-testid="button-history"
+              >
+                <History className="h-4 w-4 mr-2" />
+                History
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setStartNewDialogOpen(true)}
+                data-testid="button-start-new"
+              >
+                <FilePlus className="h-4 w-4 mr-2" />
+                Start New
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -490,27 +518,32 @@ export default function Home() {
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-        <AlertDialogContent data-testid="dialog-reset-confirm">
+      <AlertDialog open={startNewDialogOpen} onOpenChange={setStartNewDialogOpen}>
+        <AlertDialogContent data-testid="dialog-start-new-confirm">
           <AlertDialogHeader>
-            <AlertDialogTitle>Reset All Data</AlertDialogTitle>
+            <AlertDialogTitle>Start New Project</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete all cables, circuits, and splices. This action cannot be undone.
+              Your current project will be automatically saved with a date/time stamp. 
+              All current cables and circuits will be cleared to start fresh.
               Are you sure you want to continue?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel data-testid="button-reset-cancel">Cancel</AlertDialogCancel>
+            <AlertDialogCancel data-testid="button-start-new-cancel">Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => resetDataMutation.mutate()}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              data-testid="button-reset-confirm"
+              onClick={() => startNewMutation.mutate()}
+              data-testid="button-start-new-confirm"
             >
-              Reset All Data
+              Save & Start New
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <HistoryDialog 
+        open={historyDialogOpen} 
+        onOpenChange={setHistoryDialogOpen} 
+      />
 
     </div>
   );
