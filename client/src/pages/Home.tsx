@@ -250,38 +250,79 @@ export default function Home() {
           <TabsContent value="splice">
             <Card>
               <CardHeader>
-                <CardTitle>Spliced Circuits</CardTitle>
+                <CardTitle>Splice Mapping</CardTitle>
               </CardHeader>
               <CardContent>
                 {circuitsLoading ? (
                   <div className="text-center py-12 text-muted-foreground">Loading circuits...</div>
                 ) : splicedCircuits.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground" data-testid="text-no-spliced-circuits">
-                    No circuits marked as spliced yet. Check the "Spliced" box next to circuits in the InputData tab.
+                    No circuits marked as spliced yet. Check Distribution circuits in the InputData tab.
                   </div>
                 ) : (
                   <div className="rounded-md border">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Cable</TableHead>
-                          <TableHead>Circuit ID</TableHead>
-                          <TableHead>Fiber Range</TableHead>
+                          <TableHead className="w-1/3">Feed Cable | Ribbon | Strand</TableHead>
+                          <TableHead className="w-1/3 text-center">Circuit</TableHead>
+                          <TableHead className="w-1/3 text-right">Distribution Cable | Ribbon | Strand</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {splicedCircuits.map((circuit) => {
-                          const cable = cables.find((c) => c.id === circuit.cableId);
+                          const distributionCable = cables.find((c) => c.id === circuit.cableId);
+                          const feedCable = circuit.feedCableId ? cables.find((c) => c.id === circuit.feedCableId) : undefined;
+                          
+                          // Calculate ribbon and strand for distribution circuit
+                          const ribbonSize = 12;
+                          const getRibbonNumber = (fiberStart: number) => Math.ceil(fiberStart / ribbonSize);
+                          const getFiberPositionInRibbon = (fiber: number) => ((fiber - 1) % ribbonSize) + 1;
+                          
+                          const distStartRibbon = getRibbonNumber(circuit.fiberStart);
+                          const distEndRibbon = getRibbonNumber(circuit.fiberEnd);
+                          const distStartStrand = getFiberPositionInRibbon(circuit.fiberStart);
+                          const distEndStrand = getFiberPositionInRibbon(circuit.fiberEnd);
+                          
+                          let distRibbonDisplay = "";
+                          if (distStartRibbon === distEndRibbon) {
+                            distRibbonDisplay = `R${distStartRibbon}: ${distStartStrand}-${distEndStrand}`;
+                          } else {
+                            const firstRibbonEnd = ribbonSize;
+                            const lastRibbonStart = 1;
+                            distRibbonDisplay = `R${distStartRibbon}:${distStartStrand}-${firstRibbonEnd} / R${distEndRibbon}:${lastRibbonStart}-${distEndStrand}`;
+                          }
+                          
+                          // Parse circuit ID to get count
+                          const circuitIdParts = circuit.circuitId.split(',');
+                          const circuitPrefix = circuitIdParts[0] || "";
+                          const fiberCount = circuit.fiberEnd - circuit.fiberStart + 1;
+                          
                           return (
                             <TableRow key={circuit.id} data-testid={`row-spliced-circuit-${circuit.id}`}>
-                              <TableCell className="font-medium" data-testid={`text-cable-name-${circuit.id}`}>
-                                {cable?.name || "Unknown"}
+                              <TableCell className="font-mono text-sm" data-testid={`text-feed-info-${circuit.id}`}>
+                                {feedCable ? (
+                                  <div>
+                                    <div className="font-medium">{feedCable.name}</div>
+                                    <div className="text-muted-foreground text-xs mt-1">
+                                      (Feed cable details)
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span className="text-muted-foreground">No feed cable</span>
+                                )}
                               </TableCell>
-                              <TableCell className="font-mono text-sm" data-testid={`text-circuit-id-${circuit.id}`}>
-                                {circuit.circuitId}
+                              <TableCell className="text-center" data-testid={`text-circuit-info-${circuit.id}`}>
+                                <div className="font-mono text-sm">
+                                  <div className="font-medium">Circuit {circuitPrefix}</div>
+                                  <div className="text-muted-foreground text-xs mt-1">{fiberCount} fibers</div>
+                                </div>
                               </TableCell>
-                              <TableCell className="font-mono text-sm" data-testid={`text-fiber-range-${circuit.id}`}>
-                                Fibers {circuit.fiberStart}-{circuit.fiberEnd}
+                              <TableCell className="text-right font-mono text-sm" data-testid={`text-dist-info-${circuit.id}`}>
+                                <div>
+                                  <div className="font-medium">{distributionCable?.name || "Unknown"}</div>
+                                  <div className="text-muted-foreground text-xs mt-1">{distRibbonDisplay}</div>
+                                </div>
                               </TableCell>
                             </TableRow>
                           );
