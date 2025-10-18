@@ -11,20 +11,6 @@ import { Plus, Trash2, CheckCircle2, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -40,14 +26,6 @@ interface CircuitManagementProps {
 export function CircuitManagement({ cable }: CircuitManagementProps) {
   const { toast } = useToast();
   const [circuitId, setCircuitId] = useState("");
-  const [feedSelectionDialog, setFeedSelectionDialog] = useState<{ open: boolean; circuitId: string | null }>({
-    open: false,
-    circuitId: null,
-  });
-  const [selectedFeedCableId, setSelectedFeedCableId] = useState<string>("");
-  const [feedRibbon, setFeedRibbon] = useState<string>("");
-  const [feedStrandStart, setFeedStrandStart] = useState<string>("");
-  const [feedStrandEnd, setFeedStrandEnd] = useState<string>("");
 
   const { data: circuits = [], isLoading } = useQuery<Circuit[]>({
     queryKey: ["/api/circuits/cable", cable.id],
@@ -62,9 +40,9 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     queryKey: ["/api/cables"],
   });
 
-  const feedCables = useMemo(() => {
-    return allCables.filter((c) => c.type === "Feed");
-  }, [allCables]);
+  const { data: allCircuits = [] } = useQuery<Circuit[]>({
+    queryKey: ["/api/circuits"],
+  });
 
   const createCircuitMutation = useMutation({
     mutationFn: async (data: InsertCircuit) => {
@@ -113,11 +91,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/circuits/cable", cable.id] });
       queryClient.invalidateQueries({ queryKey: ["/api/circuits"] });
-      setFeedSelectionDialog({ open: false, circuitId: null });
-      setSelectedFeedCableId("");
-      setFeedRibbon("");
-      setFeedStrandStart("");
-      setFeedStrandEnd("");
     },
     onError: () => {
       toast({ title: "Failed to toggle splice status", variant: "destructive" });
@@ -126,61 +99,33 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
 
   const handleCheckboxChange = (circuit: Circuit, checked: boolean) => {
     if (cable.type === "Distribution" && checked) {
-      // Opening splice dialog - need to select Feed cable and fiber range
-      setFeedSelectionDialog({ open: true, circuitId: circuit.id });
-      setSelectedFeedCableId(circuit.feedCableId || "");
-      
-      // Pre-populate feed fiber range if already set
-      if (circuit.feedFiberStart && circuit.feedFiberEnd) {
-        const ribbonSize = 12;
-        const getRibbonNumber = (fiber: number) => Math.ceil(fiber / ribbonSize);
-        const getFiberPositionInRibbon = (fiber: number) => ((fiber - 1) % ribbonSize) + 1;
-        
-        setFeedRibbon(getRibbonNumber(circuit.feedFiberStart).toString());
-        setFeedStrandStart(getFiberPositionInRibbon(circuit.feedFiberStart).toString());
-        setFeedStrandEnd(getFiberPositionInRibbon(circuit.feedFiberEnd).toString());
+      // Automatically find matching circuit in Feed cables
+      const matchingFeedCircuit = allCircuits.find(c => {
+        const feedCable = allCables.find(cable => cable.id === c.cableId);
+        return feedCable?.type === "Feed" && c.circuitId === circuit.circuitId;
+      });
+
+      if (!matchingFeedCircuit) {
+        toast({
+          title: "No matching Feed circuit found",
+          description: `Could not find circuit "${circuit.circuitId}" in any Feed cable`,
+          variant: "destructive",
+        });
+        return;
       }
-    } else {
-      // Unchecking - just toggle without feed cable selection
-      toggleSplicedMutation.mutate({ circuitId: circuit.id });
-    }
-  };
 
-  const handleConfirmFeedSelection = () => {
-    if (!selectedFeedCableId) {
-      toast({
-        title: "Feed cable required",
-        description: "Please select a Feed cable for this splice",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!feedRibbon || !feedStrandStart || !feedStrandEnd) {
-      toast({
-        title: "Feed fiber range required",
-        description: "Please specify ribbon and strand range in the Feed cable",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Calculate feed fiber start and end from ribbon and strand
-    const ribbonSize = 12;
-    const ribbon = parseInt(feedRibbon);
-    const strandStart = parseInt(feedStrandStart);
-    const strandEnd = parseInt(feedStrandEnd);
-    
-    const feedFiberStart = (ribbon - 1) * ribbonSize + strandStart;
-    const feedFiberEnd = (ribbon - 1) * ribbonSize + strandEnd;
-
-    if (feedSelectionDialog.circuitId) {
+      // Get the Feed cable for this circuit
+      const feedCable = allCables.find(c => c.id === matchingFeedCircuit.cableId);
+      
       toggleSplicedMutation.mutate({
-        circuitId: feedSelectionDialog.circuitId,
-        feedCableId: selectedFeedCableId,
-        feedFiberStart,
-        feedFiberEnd,
+        circuitId: circuit.id,
+        feedCableId: feedCable?.id,
+        feedFiberStart: matchingFeedCircuit.fiberStart,
+        feedFiberEnd: matchingFeedCircuit.fiberEnd,
       });
+    } else {
+      // Unchecking - just toggle without feed cable info
+      toggleSplicedMutation.mutate({ circuitId: circuit.id });
     }
   };
 
@@ -354,93 +299,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
           </div>
         )}
       </CardContent>
-
-      <Dialog open={feedSelectionDialog.open} onOpenChange={(open) => !open && setFeedSelectionDialog({ open: false, circuitId: null })}>
-        <DialogContent data-testid="dialog-feed-selection">
-          <DialogHeader>
-            <DialogTitle>Select Feed Cable and Fiber Range</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="feed-cable">Feed Cable</Label>
-              <Select value={selectedFeedCableId} onValueChange={setSelectedFeedCableId}>
-                <SelectTrigger id="feed-cable" data-testid="select-feed-cable">
-                  <SelectValue placeholder="Select a Feed cable" />
-                </SelectTrigger>
-                <SelectContent>
-                  {feedCables.map((feedCable) => (
-                    <SelectItem key={feedCable.id} value={feedCable.id} data-testid={`option-feed-${feedCable.id}`}>
-                      {feedCable.name} ({feedCable.fiberCount} fibers)
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="feed-ribbon">Feed Ribbon</Label>
-              <Input
-                id="feed-ribbon"
-                type="number"
-                min="1"
-                placeholder="e.g., 2"
-                value={feedRibbon}
-                onChange={(e) => setFeedRibbon(e.target.value)}
-                data-testid="input-feed-ribbon"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="feed-strand-start">Start Strand</Label>
-                <Input
-                  id="feed-strand-start"
-                  type="number"
-                  min="1"
-                  max="12"
-                  placeholder="e.g., 9"
-                  value={feedStrandStart}
-                  onChange={(e) => setFeedStrandStart(e.target.value)}
-                  data-testid="input-feed-strand-start"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="feed-strand-end">End Strand</Label>
-                <Input
-                  id="feed-strand-end"
-                  type="number"
-                  min="1"
-                  max="12"
-                  placeholder="e.g., 12"
-                  value={feedStrandEnd}
-                  onChange={(e) => setFeedStrandEnd(e.target.value)}
-                  data-testid="input-feed-strand-end"
-                />
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setFeedSelectionDialog({ open: false, circuitId: null });
-                setSelectedFeedCableId("");
-                setFeedRibbon("");
-                setFeedStrandStart("");
-                setFeedStrandEnd("");
-              }}
-              data-testid="button-cancel-feed-selection"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirmFeedSelection}
-              disabled={toggleSplicedMutation.isPending}
-              data-testid="button-confirm-feed-selection"
-            >
-              Confirm
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 }
