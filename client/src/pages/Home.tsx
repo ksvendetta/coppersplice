@@ -324,7 +324,7 @@ export default function Home() {
                           const fiberRows = [];
                           for (let i = 0; i < circuit.fiberEnd - circuit.fiberStart + 1; i++) {
                             const distFiber = circuit.fiberStart + i;
-                            const feedFiber = circuit.fiberStart + i; // Assume 1:1 mapping
+                            const feedFiber = (circuit.feedFiberStart || circuit.fiberStart) + i;
                             
                             const distRibbon = getRibbonNumber(distFiber);
                             const distStrand = getFiberPositionInRibbon(distFiber);

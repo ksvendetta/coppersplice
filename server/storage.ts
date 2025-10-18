@@ -14,7 +14,7 @@ export interface IStorage {
   getCircuit(id: string): Promise<Circuit | undefined>;
   createCircuit(circuit: InsertCircuit): Promise<Circuit>;
   updateCircuit(id: string, circuit: Partial<InsertCircuit>): Promise<Circuit | undefined>;
-  toggleCircuitSpliced(id: string, feedCableId?: string): Promise<Circuit | undefined>;
+  toggleCircuitSpliced(id: string, feedCableId?: string, feedFiberStart?: number, feedFiberEnd?: number): Promise<Circuit | undefined>;
   deleteCircuit(id: string): Promise<boolean>;
   deleteCircuitsByCableId(cableId: string): Promise<void>;
   
@@ -107,19 +107,23 @@ export class DatabaseStorage implements IStorage {
     return circuit || undefined;
   }
 
-  async toggleCircuitSpliced(id: string, feedCableId?: string): Promise<Circuit | undefined> {
+  async toggleCircuitSpliced(id: string, feedCableId?: string, feedFiberStart?: number, feedFiberEnd?: number): Promise<Circuit | undefined> {
     const circuit = await this.getCircuit(id);
     if (!circuit) return undefined;
     
     const newSplicedStatus = circuit.isSpliced === 1 ? 0 : 1;
     const updateData: Partial<Circuit> = { isSpliced: newSplicedStatus };
     
-    // If splicing (setting to 1), set the feedCableId
-    // If unsplicing (setting to 0), clear the feedCableId
+    // If splicing (setting to 1), set the feedCableId and feed fiber range
+    // If unsplicing (setting to 0), clear the feedCableId and feed fiber range
     if (newSplicedStatus === 1 && feedCableId) {
       updateData.feedCableId = feedCableId;
+      updateData.feedFiberStart = feedFiberStart || null;
+      updateData.feedFiberEnd = feedFiberEnd || null;
     } else if (newSplicedStatus === 0) {
       updateData.feedCableId = null;
+      updateData.feedFiberStart = null;
+      updateData.feedFiberEnd = null;
     }
     
     const [updatedCircuit] = await db
