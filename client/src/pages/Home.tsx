@@ -504,13 +504,17 @@ export default function Home() {
                                           <span className={`inline-block px-2 py-1 rounded border-2 border-black ${feedRibbonColor.bg} ${feedRibbonColor.text} font-mono font-semibold text-xs`}>
                                             R{currentFeedRibbon}
                                           </span>
+                                          <span className="font-mono font-semibold">:</span>
                                           <span className={`inline-block px-2 py-1 rounded border-2 border-black ${feedStrandStartColor.bg} ${feedStrandStartColor.text} font-mono font-semibold text-xs`}>
                                             {feedStrandStart}
                                           </span>
                                           {feedStrandStart !== feedStrandEnd && (
-                                            <span className={`inline-block px-2 py-1 rounded border-2 border-black ${feedStrandEndColor.bg} ${feedStrandEndColor.text} font-mono font-semibold text-xs`}>
-                                              {feedStrandEnd}
-                                            </span>
+                                            <>
+                                              <span className="font-mono font-semibold">-</span>
+                                              <span className={`inline-block px-2 py-1 rounded border-2 border-black ${feedStrandEndColor.bg} ${feedStrandEndColor.text} font-mono font-semibold text-xs`}>
+                                                {feedStrandEnd}
+                                              </span>
+                                            </>
                                           )}
                                         </div>
                                       </TableCell>
@@ -520,13 +524,17 @@ export default function Home() {
                                           <span className={`inline-block px-2 py-1 rounded border-2 border-black ${distRibbonColor.bg} ${distRibbonColor.text} font-mono font-semibold text-xs`}>
                                             R{currentDistRibbon}
                                           </span>
+                                          <span className="font-mono font-semibold">:</span>
                                           <span className={`inline-block px-2 py-1 rounded border-2 border-black ${distStrandStartColor.bg} ${distStrandStartColor.text} font-mono font-semibold text-xs`}>
                                             {distStrandStart}
                                           </span>
                                           {distStrandStart !== distStrandEnd && (
-                                            <span className={`inline-block px-2 py-1 rounded border-2 border-black ${distStrandEndColor.bg} ${distStrandEndColor.text} font-mono font-semibold text-xs`}>
-                                              {distStrandEnd}
-                                            </span>
+                                            <>
+                                              <span className="font-mono font-semibold">-</span>
+                                              <span className={`inline-block px-2 py-1 rounded border-2 border-black ${distStrandEndColor.bg} ${distStrandEndColor.text} font-mono font-semibold text-xs`}>
+                                                {distStrandEnd}
+                                              </span>
+                                            </>
                                           )}
                                         </div>
                                       </TableCell>
