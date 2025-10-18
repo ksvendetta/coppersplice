@@ -39,8 +39,10 @@ Preferred communication style: Simple, everyday language.
 **Database Persistence:** Full PostgreSQL integration, all data persists, automatic schema migrations with Drizzle Kit.
 **Checkbox-Based Splicing with Automatic Range-Based Circuit Matching:**
 - Simple checkbox to mark Distribution circuits as spliced, automatically searching all Feed cables for a matching circuit using range-based matching.
-- **Range-Based Matching Logic:** Distribution circuit matches a Feed circuit if (1) both have the same prefix (part before comma), and (2) the Distribution circuit's fiber range is within the Feed circuit's fiber range.
+- **Range-Based Matching Logic:** Distribution circuit matches a Feed circuit if (1) both have the same prefix (part before comma), and (2) the Distribution circuit's numeric range from the circuit ID is within the Feed circuit's numeric range from the circuit ID.
+- **Important:** Matching uses the numeric range from the circuit ID itself (e.g., "test,3-4" extracts 3-4), NOT the physical fiber positions in the cable.
 - **Example:** Distribution circuit "test,3-4" matches Feed circuit "test,1-12" because prefix "test" matches and range 3-4 is within 1-12.
+- **Example:** Distribution circuit "exact,15-20" matches Feed circuit "exact,15-20" (exact match where 15-20 equals 15-20).
 - Automatically extracts Feed cable ID and fiber positions for one-click splicing.
 - Stores `feedCableId`, `feedFiberStart`, `feedFiberEnd` in the circuits table (Distribution circuit's actual fiber range, not Feed range).
 - Error handling with toast messages if no matching Feed circuit is found.
@@ -55,9 +57,10 @@ Preferred communication style: Simple, everyday language.
 - Real-time validation for fiber count matching cable capacity.
 - Visual feedback on assigned/total fiber count.
 **User Interface:**
-- Two main tabs: **InputData** (cable and circuit management) and **Splice** (splice mappings).
+- Two main tabs: **InputData** (cable and circuit management) with Cable icon, and **Splice** (splice mappings) with Workflow icon.
 - InputData tab features cable list, cable details, circuit management, and splice checkboxes.
 - Splice tab features a three-row header with "Feed" and "Distribution" sections and detailed, color-coded individual fiber mapping.
+- **Label Usage:** Cable details section shows "Cable Size: X", Circuit management header shows "Fiber Count: X".
 - Responsive design with a professional technical interface.
 
 ## External Dependencies
