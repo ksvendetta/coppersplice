@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, CheckCircle2, XCircle } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, XCircle, Edit2, Check, X, ChevronUp, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import {
@@ -26,6 +26,8 @@ interface CircuitManagementProps {
 export function CircuitManagement({ cable }: CircuitManagementProps) {
   const { toast } = useToast();
   const [circuitId, setCircuitId] = useState("");
+  const [editingCircuitId, setEditingCircuitId] = useState<string | null>(null);
+  const [editingCircuitValue, setEditingCircuitValue] = useState("");
 
   const { data: circuits = [], isLoading } = useQuery<Circuit[]>({
     queryKey: ["/api/circuits/cable", cable.id],
@@ -97,6 +99,38 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     },
   });
 
+  const updateCircuitIdMutation = useMutation({
+    mutationFn: async ({ id, circuitId }: { id: string; circuitId: string }) => {
+      return await apiRequest("PATCH", `/api/circuits/${id}/update-circuit-id`, { circuitId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/circuits/cable", cable.id] });
+      setEditingCircuitId(null);
+      setEditingCircuitValue("");
+      toast({ title: "Circuit ID updated successfully" });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Failed to update circuit ID", 
+        description: error.message || "Please check your input",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const moveCircuitMutation = useMutation({
+    mutationFn: async ({ id, direction }: { id: string; direction: "up" | "down" }) => {
+      return await apiRequest("PATCH", `/api/circuits/${id}/move`, { direction });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/circuits/cable", cable.id] });
+      toast({ title: "Circuit moved successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to move circuit", variant: "destructive" });
+    },
+  });
+
   const handleCheckboxChange = (circuit: Circuit, checked: boolean) => {
     if (cable.type === "Distribution" && checked) {
       // Automatically find matching circuit in Feed cables
@@ -127,6 +161,28 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       // Unchecking - just toggle without feed cable info
       toggleSplicedMutation.mutate({ circuitId: circuit.id });
     }
+  };
+
+  const handleStartEdit = (circuit: Circuit) => {
+    setEditingCircuitId(circuit.id);
+    setEditingCircuitValue(circuit.circuitId);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCircuitId(null);
+    setEditingCircuitValue("");
+  };
+
+  const handleSaveEdit = (circuitId: string) => {
+    if (!editingCircuitValue.trim()) {
+      toast({
+        title: "Circuit ID required",
+        description: "Please enter a valid circuit ID",
+        variant: "destructive",
+      });
+      return;
+    }
+    updateCircuitIdMutation.mutate({ id: circuitId, circuitId: editingCircuitValue });
   };
 
   const handleAddCircuit = () => {
@@ -250,12 +306,13 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {circuits.map((circuit) => {
+                {circuits.map((circuit, index) => {
                   const ribbonDisplay = getRibbonAndStrandDisplay(
                     circuit.fiberStart,
                     circuit.fiberEnd,
                     cable.ribbonSize
                   );
+                  const isEditing = editingCircuitId === circuit.id;
                   
                   return (
                     <TableRow key={circuit.id} data-testid={`row-circuit-${circuit.id}`}>
@@ -265,25 +322,92 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
                             checked={circuit.isSpliced === 1}
                             onCheckedChange={(checked) => handleCheckboxChange(circuit, checked as boolean)}
                             data-testid={`checkbox-spliced-${circuit.id}`}
+                            disabled={isEditing}
                           />
                         </TableCell>
                       )}
                       <TableCell className="font-mono text-sm" data-testid={`text-circuit-id-${circuit.id}`}>
-                        {circuit.circuitId}
+                        {isEditing ? (
+                          <Input
+                            value={editingCircuitValue}
+                            onChange={(e) => setEditingCircuitValue(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleSaveEdit(circuit.id);
+                              if (e.key === "Escape") handleCancelEdit();
+                            }}
+                            className="text-sm font-mono h-8"
+                            data-testid={`input-edit-circuit-${circuit.id}`}
+                            autoFocus
+                          />
+                        ) : (
+                          circuit.circuitId
+                        )}
                       </TableCell>
                       <TableCell className="font-mono text-sm" data-testid={`text-fiber-range-${circuit.id}`}>
                         {ribbonDisplay}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          data-testid={`button-delete-circuit-${circuit.id}`}
-                          onClick={() => deleteCircuitMutation.mutate(circuit.id)}
-                          disabled={deleteCircuitMutation.isPending}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <div className="flex justify-end gap-1">
+                          {isEditing ? (
+                            <>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => handleSaveEdit(circuit.id)}
+                                disabled={updateCircuitIdMutation.isPending}
+                                data-testid={`button-save-circuit-${circuit.id}`}
+                              >
+                                <Check className="h-4 w-4 text-green-600" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={handleCancelEdit}
+                                data-testid={`button-cancel-edit-${circuit.id}`}
+                              >
+                                <X className="h-4 w-4 text-red-600" />
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => handleStartEdit(circuit)}
+                                data-testid={`button-edit-circuit-${circuit.id}`}
+                              >
+                                <Edit2 className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => moveCircuitMutation.mutate({ id: circuit.id, direction: "up" })}
+                                disabled={index === 0 || moveCircuitMutation.isPending}
+                                data-testid={`button-move-up-${circuit.id}`}
+                              >
+                                <ChevronUp className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => moveCircuitMutation.mutate({ id: circuit.id, direction: "down" })}
+                                disabled={index === circuits.length - 1 || moveCircuitMutation.isPending}
+                                data-testid={`button-move-down-${circuit.id}`}
+                              >
+                                <ChevronDown className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                data-testid={`button-delete-circuit-${circuit.id}`}
+                                onClick={() => deleteCircuitMutation.mutate(circuit.id)}
+                                disabled={deleteCircuitMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
