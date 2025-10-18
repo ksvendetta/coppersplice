@@ -37,13 +37,16 @@ Preferred communication style: Simple, everyday language.
 ### System Design Choices & Features
 
 **Database Persistence:** Full PostgreSQL integration, all data persists, automatic schema migrations with Drizzle Kit.
-**Checkbox-Based Splicing with Automatic Circuit Matching:**
-- Simple checkbox to mark Distribution circuits as spliced, automatically searching all Feed cables for a matching `circuitId`.
+**Checkbox-Based Splicing with Automatic Range-Based Circuit Matching:**
+- Simple checkbox to mark Distribution circuits as spliced, automatically searching all Feed cables for a matching circuit using range-based matching.
+- **Range-Based Matching Logic:** Distribution circuit matches a Feed circuit if (1) both have the same prefix (part before comma), and (2) the Distribution circuit's fiber range is within the Feed circuit's fiber range.
+- **Example:** Distribution circuit "test,3-4" matches Feed circuit "test,1-12" because prefix "test" matches and range 3-4 is within 1-12.
 - Automatically extracts Feed cable ID and fiber positions for one-click splicing.
-- Stores `feedCableId`, `feedFiberStart`, `feedFiberEnd` in the circuits table.
+- Stores `feedCableId`, `feedFiberStart`, `feedFiberEnd` in the circuits table (Distribution circuit's actual fiber range, not Feed range).
 - Error handling with toast messages if no matching Feed circuit is found.
 - Splice tab displays individual fiber mappings (one row per fiber) with color-coded, industry-standard fiber optic colors (12 colors).
-**Cable Search:** Real-time search by cable name or type.
+**Pass/Fail Status Badges:** Cables and circuits display green "Pass" badges when total assigned fibers are within cable capacity, or red "Fail" badges when exceeded.
+**Delete Cable:** Immediate deletion without confirmation dialog.
 **Circuit ID Management (Auto-Calculated Fiber Positions with Edit and Reorder):**
 - Simplified input: `circuitId` is the only required input.
 - Inline editing of circuit IDs with automatic recalculation of fiber positions.
