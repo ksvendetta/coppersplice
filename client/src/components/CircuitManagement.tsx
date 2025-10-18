@@ -52,6 +52,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/circuits/cable", cable.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/circuits"] });
       setCircuitId("");
       toast({ title: "Circuit added successfully" });
     },
@@ -70,6 +71,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/circuits/cable", cable.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/circuits"] });
       toast({ title: "Circuit deleted successfully" });
     },
     onError: () => {
