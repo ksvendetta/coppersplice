@@ -107,6 +107,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/circuits/cable", cable.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/circuits"] });
       setEditingCircuitId(null);
       setEditingCircuitValue("");
       toast({ title: "Circuit ID updated successfully" });
