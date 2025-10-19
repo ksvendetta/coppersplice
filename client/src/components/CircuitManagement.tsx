@@ -50,11 +50,9 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     mutationFn: async (data: InsertCircuit) => {
       return await apiRequest("POST", "/api/circuits", data);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
-      setCircuitId("");
+    onSuccess: () => {
       toast({ title: "Circuit added successfully" });
+      window.location.reload();
     },
     onError: (error: any) => {
       toast({ 
@@ -69,10 +67,9 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     mutationFn: async (id: string) => {
       return await apiRequest("DELETE", `/api/circuits/${id}`, undefined);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
+    onSuccess: () => {
       toast({ title: "Circuit deleted successfully" });
+      window.location.reload();
     },
     onError: () => {
       toast({ title: "Failed to delete circuit", variant: "destructive" });
@@ -92,9 +89,8 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
         feedFiberEnd 
       });
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
+    onSuccess: () => {
+      window.location.reload();
     },
     onError: () => {
       toast({ title: "Failed to toggle splice status", variant: "destructive" });
@@ -105,12 +101,9 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     mutationFn: async ({ id, circuitId }: { id: string; circuitId: string }) => {
       return await apiRequest("PATCH", `/api/circuits/${id}/update-circuit-id`, { circuitId });
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
-      setEditingCircuitId(null);
-      setEditingCircuitValue("");
+    onSuccess: () => {
       toast({ title: "Circuit ID updated successfully" });
+      window.location.reload();
     },
     onError: (error: any) => {
       toast({ 
@@ -125,10 +118,9 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     mutationFn: async ({ id, direction }: { id: string; direction: "up" | "down" }) => {
       return await apiRequest("PATCH", `/api/circuits/${id}/move`, { direction });
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
+    onSuccess: () => {
       toast({ title: "Circuit moved successfully" });
+      window.location.reload();
     },
     onError: () => {
       toast({ title: "Failed to move circuit", variant: "destructive" });

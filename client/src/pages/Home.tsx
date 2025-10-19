@@ -68,11 +68,9 @@ export default function Home() {
     mutationFn: async (data: InsertCable) => {
       return await apiRequest("POST", "/api/cables", data);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/cables"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
-      setCableDialogOpen(false);
+    onSuccess: () => {
       toast({ title: "Cable created successfully" });
+      window.location.reload();
     },
     onError: (error: any) => {
       const errorMessage = error?.message || "Failed to create cable";
@@ -84,12 +82,9 @@ export default function Home() {
     mutationFn: async ({ id, data }: { id: string; data: InsertCable }) => {
       return await apiRequest("PUT", `/api/cables/${id}`, data);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/cables"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
-      setCableDialogOpen(false);
-      setEditingCable(null);
+    onSuccess: () => {
       toast({ title: "Cable updated successfully" });
+      window.location.reload();
     },
     onError: (error: any) => {
       const errorMessage = error?.message || "Failed to update cable";
@@ -101,10 +96,9 @@ export default function Home() {
     mutationFn: async (id: string) => {
       return await apiRequest("DELETE", `/api/cables/${id}`, undefined);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/cables"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
+    onSuccess: () => {
       toast({ title: "Cable deleted successfully" });
+      window.location.reload();
     },
     onError: () => {
       toast({ title: "Failed to delete cable", variant: "destructive" });
@@ -130,13 +124,9 @@ export default function Home() {
       // Then reset all data
       return await apiRequest("DELETE", "/api/reset", undefined);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/cables"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/saves"] });
-      setSelectedCableId(null);
-      setStartNewDialogOpen(false);
+    onSuccess: () => {
       toast({ title: "Current project saved. Starting new project." });
+      window.location.reload();
     },
     onError: () => {
       toast({ title: "Failed to start new project", variant: "destructive" });
@@ -147,12 +137,9 @@ export default function Home() {
     mutationFn: async () => {
       return await apiRequest("DELETE", "/api/reset", undefined);
     },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["/api/cables"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
-      setSelectedCableId(null);
-      setResetDialogOpen(false);
+    onSuccess: () => {
       toast({ title: "All data has been reset" });
+      window.location.reload();
     },
     onError: () => {
       toast({ title: "Failed to reset data", variant: "destructive" });
