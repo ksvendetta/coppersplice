@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCableSchema, insertCircuitSchema, insertSpliceSchema, parseCircuitId } from "@shared/schema";
+import { insertCableSchema, insertCircuitSchema, insertSpliceSchema, parseCircuitId, circuitIdsOverlap } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -43,6 +43,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const filteredCircuitIds = validatedData.circuitIds
           .map(id => id.trim())
           .filter(id => id.length > 0);
+        
+        // Check for overlapping circuit IDs with existing circuits across ALL cables
+        const allCables = await storage.getAllCables();
+        for (const newCircuitId of filteredCircuitIds) {
+          for (const otherCable of allCables) {
+            const otherCircuits = await storage.getCircuitsByCableId(otherCable.id);
+            for (const otherCircuit of otherCircuits) {
+              if (circuitIdsOverlap(newCircuitId, otherCircuit.circuitId)) {
+                return res.status(400).json({ 
+                  error: `Circuit ID "${newCircuitId}" overlaps with existing circuit "${otherCircuit.circuitId}" on cable "${otherCable.name}"` 
+                });
+              }
+            }
+          }
+        }
+        
+        // Check for overlapping circuit IDs within the new circuits being created
+        for (let i = 0; i < filteredCircuitIds.length; i++) {
+          for (let j = i + 1; j < filteredCircuitIds.length; j++) {
+            if (circuitIdsOverlap(filteredCircuitIds[i], filteredCircuitIds[j])) {
+              return res.status(400).json({ 
+                error: `Circuit ID "${filteredCircuitIds[i]}" overlaps with circuit "${filteredCircuitIds[j]}" in the same cable` 
+              });
+            }
+          }
+        }
         
         let currentFiberStart = 1;
         
@@ -206,6 +232,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Check for overlapping circuit IDs across ALL cables
+      const allCables = await storage.getAllCables();
+      for (const otherCable of allCables) {
+        const otherCircuits = await storage.getCircuitsByCableId(otherCable.id);
+        for (const otherCircuit of otherCircuits) {
+          if (circuitIdsOverlap(validatedData.circuitId, otherCircuit.circuitId)) {
+            return res.status(400).json({ 
+              error: `Circuit ID "${validatedData.circuitId}" overlaps with existing circuit "${otherCircuit.circuitId}" on cable "${otherCable.name}"` 
+            });
+          }
+        }
+      }
+      
       // Get existing circuits for this cable to calculate position
       const existingCircuits = await storage.getCircuitsByCableId(validatedData.cableId);
       const position = existingCircuits.length; // 0-indexed position
@@ -293,6 +332,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ 
           error: `Invalid circuit ID format. Expected format: "prefix,start-end" (e.g., "lg,33-36")` 
         });
+      }
+      
+      // Check for overlapping circuit IDs across ALL cables (excluding the current circuit being updated)
+      const allCables = await storage.getAllCables();
+      for (const otherCable of allCables) {
+        const otherCircuits = await storage.getCircuitsByCableId(otherCable.id);
+        for (const otherCircuit of otherCircuits) {
+          // Skip checking against itself
+          if (otherCircuit.id === req.params.id) {
+            continue;
+          }
+          if (circuitIdsOverlap(circuitId, otherCircuit.circuitId)) {
+            return res.status(400).json({ 
+              error: `Circuit ID "${circuitId}" overlaps with existing circuit "${otherCircuit.circuitId}" on cable "${otherCable.name}"` 
+            });
+          }
+        }
       }
       
       // Clear splice data when circuit ID changes (fiber count may have changed)

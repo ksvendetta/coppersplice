@@ -153,3 +153,44 @@ export function parseCircuitId(circuitId: string): number {
   const end = parseInt(match[2], 10);
   return end - start + 1;
 }
+
+// Helper to extract prefix and range from circuit ID
+// Examples: "pon,1-8" => { prefix: "pon", rangeStart: 1, rangeEnd: 8 }
+export function parseCircuitIdParts(circuitId: string): { prefix: string; rangeStart: number; rangeEnd: number } {
+  const parts = circuitId.split(',');
+  if (parts.length !== 2) {
+    throw new Error(`Invalid circuit ID format: ${circuitId}`);
+  }
+  const prefix = parts[0].trim();
+  const rangeMatch = parts[1].trim().match(/^(\d+)-(\d+)$/);
+  if (!rangeMatch) {
+    throw new Error(`Invalid circuit ID range format: ${circuitId}`);
+  }
+  return {
+    prefix,
+    rangeStart: parseInt(rangeMatch[1], 10),
+    rangeEnd: parseInt(rangeMatch[2], 10),
+  };
+}
+
+// Helper to check if two circuit IDs overlap
+// Two circuits overlap if they have the same prefix AND their ranges overlap
+// Examples: "pon,1-8" and "pon,8-12" overlap (both include 8)
+//           "pon,1-8" and "pon,9-12" do NOT overlap
+//           "pon,1-8" and "lg,1-8" do NOT overlap (different prefix)
+export function circuitIdsOverlap(circuitId1: string, circuitId2: string): boolean {
+  try {
+    const parts1 = parseCircuitIdParts(circuitId1);
+    const parts2 = parseCircuitIdParts(circuitId2);
+    
+    // Different prefixes = no overlap
+    if (parts1.prefix !== parts2.prefix) {
+      return false;
+    }
+    
+    // Check if ranges overlap: range1 overlaps range2 if start1 <= end2 AND start2 <= end1
+    return parts1.rangeStart <= parts2.rangeEnd && parts2.rangeStart <= parts1.rangeEnd;
+  } catch {
+    return false;
+  }
+}

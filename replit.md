@@ -71,6 +71,7 @@ Preferred communication style: Simple, everyday language.
 - Auto-calculation of fiber positions based on circuit order.
 - Real-time validation for fiber count matching cable capacity.
 - Visual feedback on assigned/total fiber count.
+- **Overlapping Circuit ID Prevention:** System validates that no two circuits across different cables have overlapping circuit IDs (same prefix with overlapping ranges). For example, "pon,1-8" and "pon,8-12" would be rejected as overlapping because both include fiber 8 in their range.
 **User Interface:**
 - Dynamic tab system: **InputData** tab (cable and circuit management) with Cable icon, and separate **Splice** tabs for each Distribution cable with Workflow icon.
 - InputData tab features cable list, cable details, circuit management, and splice checkboxes.
