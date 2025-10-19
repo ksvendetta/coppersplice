@@ -649,21 +649,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const newCableId = cableIdMap.get(circuit.cableId);
         if (!newCableId) continue; // Skip if cable mapping not found
         
-        // Map feedCableId if it exists
-        const newFeedCableId = circuit.feedCableId 
-          ? cableIdMap.get(circuit.feedCableId) 
-          : undefined;
-        
         await storage.createCircuit({
           cableId: newCableId,
           circuitId: circuit.circuitId,
           position: circuit.position,
           fiberStart: circuit.fiberStart,
           fiberEnd: circuit.fiberEnd,
-          isSpliced: circuit.isSpliced || 0,
-          feedCableId: newFeedCableId,
-          feedFiberStart: circuit.feedFiberStart,
-          feedFiberEnd: circuit.feedFiberEnd,
         });
       }
       
