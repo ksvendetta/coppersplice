@@ -32,7 +32,6 @@ Preferred communication style: Simple, everyday language.
 **IndexedDB Schema:**
 - **Cables Store:** `id` (primary key), `name`, `fiberCount`, `ribbonSize` (12), `type` ("Feed" or "Distribution"). Indexed: id, name, type.
 - **Circuits Store:** `id`, `cableId`, `circuitId`, `position`, `fiberStart`, `fiberEnd`, `isSpliced` (0/1), `feedCableId`, `feedFiberStart`, `feedFiberEnd`. Indexed: id, cableId, position, isSpliced.
-- **Saves Store:** `id`, `name` (date/time stamp), `createdAt` (timestamp), `data` (JSON string containing cables and circuits). Indexed: id, createdAt.
 - All data persists across browser sessions and page reloads.
 **Storage Abstraction:** Storage layer provides clean API for CRUD operations, called directly by query client (no HTTP involved).
 
@@ -44,7 +43,7 @@ Preferred communication style: Simple, everyday language.
 - All app assets cached for instant offline loading
 - No server required after initial load
 **Browser-Based Persistence:** IndexedDB stores all data locally, persists indefinitely unless user clears browser data.
-**Error Handling & Recovery:** Graceful 404 error handling for stale data, automatic cache invalidation, Refresh button for manual data sync.
+**Error Handling & Recovery:** Graceful 404 error handling for stale data, automatic cache invalidation.
 **Checkbox-Based Splicing with Automatic Range-Based Circuit Matching:**
 - Simple checkbox to mark Distribution circuits as spliced, automatically searching all Feed cables for a matching circuit using range-based matching.
 - **Range-Based Matching Logic:** Distribution circuit matches a Feed circuit if (1) both have the same prefix (part before comma), and (2) the Distribution circuit's numeric range from the circuit ID is within the Feed circuit's numeric range from the circuit ID.
@@ -61,13 +60,13 @@ Preferred communication style: Simple, everyday language.
   - **Fiber View:** When any circuit uses partial ribbons, displays individual fiber mappings (one row per fiber) with color-coded strand numbers.
 **Pass/Fail Status Badges:** Cables and circuits display green "Pass" badges when total assigned fibers are within cable capacity, or red "Fail" badges when exceeded.
 **Delete Cable:** Immediate deletion without confirmation dialog.
-**Save/Load System with Auto-Save:** 
-- "Start New" button in header replaces "Reset" button - auto-saves current project with date/time stamp before clearing all data
-- "History" button opens dialog showing all saved projects (max 50 saves)
-- Date/time stamped saves automatically generated (format: MM/DD/YYYY HH:MM:SS)
-- Oldest saves automatically deleted when 50-save limit is reached
-- One-click load from History dialog restores complete project state (cables and circuits)
-- Saves stored in PostgreSQL database (`saves` table with id, name, createdAt, data fields)
+**File-Based Save/Load System:** 
+- "Save" button downloads current project as JSON file to user's chosen location
+- "Load" button opens file picker to restore project from JSON file
+- User controls file names and storage location (no automatic saves)
+- JSON format contains all cables and circuits
+- Simple file management through operating system
+- Portable backups that can be shared across computers
 **Circuit ID Management (Auto-Calculated Fiber Positions with Edit and Reorder):**
 - Simplified input: `circuitId` is the only required input.
 - Inline editing of circuit IDs with automatic recalculation of fiber positions.
