@@ -557,9 +557,9 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
                   {cable.type === "Distribution" && (
                     <TableHead className="w-[10%]">Splice</TableHead>
                   )}
-                  <TableHead className={cable.type === "Distribution" ? "w-[25%]" : "w-[30%]"}>Circuit ID</TableHead>
-                  <TableHead className={cable.type === "Distribution" ? "w-[35%]" : "w-[35%]"}>Fiber Strands</TableHead>
-                  <TableHead className="w-[15%]">Fiber Count</TableHead>
+                  <TableHead className={cable.type === "Distribution" ? "w-[30%]" : "w-[35%]"}>Circuit ID</TableHead>
+                  <TableHead>Fiber Strands</TableHead>
+                  <TableHead className="w-[12%]">Fiber Count</TableHead>
                   <TableHead className="w-[15%] text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
