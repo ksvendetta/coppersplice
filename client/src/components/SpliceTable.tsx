@@ -27,7 +27,7 @@ export function SpliceTable({ splices, cables, onEdit, onDelete, onToggleComplet
   if (splices.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground" data-testid="text-no-splices">
-        No splices configured yet. Add a splice to connect fibers between cables.
+        No splices configured yet. Add a splice to connect pairs between cables.
       </div>
     );
   }
@@ -39,9 +39,9 @@ export function SpliceTable({ splices, cables, onEdit, onDelete, onToggleComplet
           <TableRow>
             <TableHead className="w-12">Done</TableHead>
             <TableHead>Source Cable</TableHead>
-            <TableHead>Source Fibers</TableHead>
+            <TableHead>Source Pairs</TableHead>
             <TableHead>Destination Cable</TableHead>
-            <TableHead>Destination Fibers</TableHead>
+            <TableHead>Destination Pairs</TableHead>
             <TableHead>PON Range</TableHead>
             <TableHead className="w-24">Actions</TableHead>
           </TableRow>
@@ -59,14 +59,14 @@ export function SpliceTable({ splices, cables, onEdit, onDelete, onToggleComplet
               <TableCell className="font-mono text-sm" data-testid={`text-splice-source-${splice.id}`}>
                 {getCableName(splice.sourceCableId)}
               </TableCell>
-              <TableCell className="font-mono text-sm" data-testid={`text-splice-source-fibers-${splice.id}`}>
-                R{splice.sourceRibbon}: {splice.sourceStartFiber}-{splice.sourceEndFiber}
+              <TableCell className="font-mono text-sm" data-testid={`text-splice-source-pairs-${splice.id}`}>
+                B{splice.sourceRibbon}: {splice.sourceStartFiber}-{splice.sourceEndFiber}
               </TableCell>
               <TableCell className="font-mono text-sm" data-testid={`text-splice-dest-${splice.id}`}>
                 {getCableName(splice.destinationCableId)}
               </TableCell>
-              <TableCell className="font-mono text-sm" data-testid={`text-splice-dest-fibers-${splice.id}`}>
-                R{splice.destinationRibbon}: {splice.destinationStartFiber}-{splice.destinationEndFiber}
+              <TableCell className="font-mono text-sm" data-testid={`text-splice-dest-pairs-${splice.id}`}>
+                B{splice.destinationRibbon}: {splice.destinationStartFiber}-{splice.destinationEndFiber}
               </TableCell>
               <TableCell className="font-mono text-sm" data-testid={`text-splice-pon-${splice.id}`}>
                 {splice.ponStart && splice.ponEnd ? `${splice.ponStart}-${splice.ponEnd}` : "—"}

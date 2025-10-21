@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Cable, Splice, getFiberColor, getFiberPositionInRibbon } from "@shared/schema";
+import { Cable, Splice, getPairColor, getPairPositionInBinder } from "@shared/schema";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getPairColorVariable } from "@/lib/fiberColors";
 
 interface SpliceConnectionsProps {
   cables: Cable[];
@@ -34,17 +35,17 @@ export function SpliceConnections({ cables, splices, containerRef, onToggleCompl
         
         if (!sourceCable || !destCable) return;
 
-        const sourceFiberElement = container.querySelector(
-          `[data-testid="fiber-${splice.sourceCableId}-${splice.sourceStartFiber}"]`
+        const sourcePairElement = container.querySelector(
+          `[data-testid="pair-${splice.sourceCableId}-${splice.sourceStartFiber}"]`
         );
-        const destFiberElement = container.querySelector(
-          `[data-testid="fiber-${splice.destinationCableId}-${splice.destinationStartFiber}"]`
+        const destPairElement = container.querySelector(
+          `[data-testid="pair-${splice.destinationCableId}-${splice.destinationStartFiber}"]`
         );
 
-        if (!sourceFiberElement || !destFiberElement) return;
+        if (!sourcePairElement || !destPairElement) return;
 
-        const sourceRect = sourceFiberElement.getBoundingClientRect();
-        const destRect = destFiberElement.getBoundingClientRect();
+        const sourceRect = sourcePairElement.getBoundingClientRect();
+        const destRect = destPairElement.getBoundingClientRect();
 
         const startX = sourceRect.right - containerRect.left;
         const startY = sourceRect.top + sourceRect.height / 2 - containerRect.top;
@@ -59,13 +60,14 @@ export function SpliceConnections({ cables, splices, containerRef, onToggleCompl
         const midX = startX + (endX - startX) / 2;
         const midY = startY + (endY - startY) / 2;
 
-        const fiberPosition = getFiberPositionInRibbon(splice.sourceStartFiber, sourceCable.ribbonSize);
-        const fiberColor = getFiberColor(fiberPosition);
+        const pairPosition = getPairPositionInBinder(splice.sourceStartFiber, sourceCable.ribbonSize);
+        const pairColor = getPairColor(pairPosition);
+        const colorVar = getPairColorVariable(pairColor.tip, pairColor.ring);
 
         newConnections.push({
           splice,
           path,
-          color: fiberColor,
+          color: colorVar.replace('pair-', ''),
           midPoint: { x: midX, y: midY },
         });
       });
@@ -110,7 +112,7 @@ export function SpliceConnections({ cables, splices, containerRef, onToggleCompl
           >
             <polygon
               points="0 0, 10 3, 0 6"
-              fill={`hsl(var(--fiber-${conn.color}))`}
+              fill={`hsl(var(--pair-${conn.color}))`}
               opacity="0.7"
             />
           </marker>
@@ -121,7 +123,7 @@ export function SpliceConnections({ cables, splices, containerRef, onToggleCompl
         <g key={conn.splice.id}>
           <path
             d={conn.path}
-            stroke={`hsl(var(--fiber-${conn.color}))`}
+            stroke={`hsl(var(--pair-${conn.color}))`}
             strokeWidth="2"
             fill="none"
             opacity={conn.splice.isCompleted ? "0.9" : "0.4"}

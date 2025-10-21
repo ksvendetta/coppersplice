@@ -37,7 +37,7 @@ export function CableForm({ cable, onSubmit, onCancel, isLoading }: CableFormPro
       type: cable.type as "Feed" | "Distribution",
     } : {
       name: "",
-      fiberCount: 24,
+      fiberCount: 50,
       type: "Feed",
       circuitIds: [],
     },
@@ -54,7 +54,7 @@ export function CableForm({ cable, onSubmit, onCancel, isLoading }: CableFormPro
               <FormLabel>Cable Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g., Cable2, Feed1, Distribution-24"
+                  placeholder="e.g., Cable2, Feed1, Distribution-50"
                   {...field}
                   data-testid="input-cable-name"
                 />
@@ -94,14 +94,14 @@ export function CableForm({ cable, onSubmit, onCancel, isLoading }: CableFormPro
           name="fiberCount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Fiber Count</FormLabel>
+              <FormLabel>Pair Count</FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="e.g., 24, 48, 72"
+                  placeholder="e.g., 25, 50, 100, 200"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                  data-testid="input-fiber-count"
+                  data-testid="input-pair-count"
                 />
               </FormControl>
               <FormMessage />
@@ -130,7 +130,7 @@ export function CableForm({ cable, onSubmit, onCancel, isLoading }: CableFormPro
                   />
                 </FormControl>
                 <FormDescription className="text-xs">
-                  Fiber positions will be auto-calculated based on circuit order
+                  Pair positions will be auto-calculated based on circuit order
                 </FormDescription>
                 <FormMessage />
               </FormItem>

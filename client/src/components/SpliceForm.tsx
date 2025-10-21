@@ -36,10 +36,10 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
       destinationCableId: "",
       sourceRibbon: 1,
       sourceStartFiber: 1,
-      sourceEndFiber: 12,
+      sourceEndFiber: 25,
       destinationRibbon: 1,
       destinationStartFiber: 1,
-      destinationEndFiber: 12,
+      destinationEndFiber: 25,
       ponStart: undefined,
       ponEnd: undefined,
       isCompleted: 0,
@@ -109,13 +109,13 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-4">
-            <h4 className="text-sm font-medium">Source Fibers</h4>
+            <h4 className="text-sm font-medium">Source Pairs</h4>
             <FormField
               control={form.control}
               name="sourceRibbon"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ribbon</FormLabel>
+                  <FormLabel>Binder</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -123,7 +123,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
                       max={sourceCable ? Math.ceil(sourceCable.fiberCount / sourceCable.ribbonSize) : 1}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      data-testid="input-source-ribbon"
+                      data-testid="input-source-binder"
                     />
                   </FormControl>
                   <FormMessage />
@@ -135,7 +135,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
               name="sourceStartFiber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Start Fiber</FormLabel>
+                  <FormLabel>Start Pair</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -143,7 +143,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
                       max={sourceCable?.fiberCount || 1}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      data-testid="input-source-start-fiber"
+                      data-testid="input-source-start-pair"
                     />
                   </FormControl>
                   <FormMessage />
@@ -155,7 +155,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
               name="sourceEndFiber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>End Fiber</FormLabel>
+                  <FormLabel>End Pair</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -163,7 +163,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
                       max={sourceCable?.fiberCount || 1}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      data-testid="input-source-end-fiber"
+                      data-testid="input-source-end-pair"
                     />
                   </FormControl>
                   <FormMessage />
@@ -173,13 +173,13 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-sm font-medium">Destination Fibers</h4>
+            <h4 className="text-sm font-medium">Destination Pairs</h4>
             <FormField
               control={form.control}
               name="destinationRibbon"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ribbon</FormLabel>
+                  <FormLabel>Binder</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -187,7 +187,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
                       max={destCable ? Math.ceil(destCable.fiberCount / destCable.ribbonSize) : 1}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      data-testid="input-dest-ribbon"
+                      data-testid="input-dest-binder"
                     />
                   </FormControl>
                   <FormMessage />
@@ -199,7 +199,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
               name="destinationStartFiber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Start Fiber</FormLabel>
+                  <FormLabel>Start Pair</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -207,7 +207,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
                       max={destCable?.fiberCount || 1}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      data-testid="input-dest-start-fiber"
+                      data-testid="input-dest-start-pair"
                     />
                   </FormControl>
                   <FormMessage />
@@ -219,7 +219,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
               name="destinationEndFiber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>End Fiber</FormLabel>
+                  <FormLabel>End Pair</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -227,7 +227,7 @@ export function SpliceForm({ cables, splice, onSubmit, onCancel, isLoading }: Sp
                       max={destCable?.fiberCount || 1}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      data-testid="input-dest-end-fiber"
+                      data-testid="input-dest-end-pair"
                     />
                   </FormControl>
                   <FormMessage />
