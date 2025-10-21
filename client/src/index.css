@@ -91,19 +91,19 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Fiber optic standard colors - Light mode variants */
-  --fiber-blue: 220 90% 56%;
-  --fiber-orange: 25 95% 53%;
-  --fiber-green: 142 70% 45%;
-  --fiber-brown: 25 45% 35%;
-  --fiber-slate: 215 15% 50%;
-  --fiber-white: 0 0% 95%;
-  --fiber-red: 0 85% 55%;
-  --fiber-black: 0 0% 15%;
-  --fiber-yellow: 48 95% 55%;
-  --fiber-violet: 270 60% 60%;
-  --fiber-pink: 330 75% 70%;
-  --fiber-aqua: 180 70% 50%;
+  /* 25-pair copper cable color codes (tip/ring combinations) */
+  /* Tip colors for visual coding */
+  --pair-white: 0 0% 95%;
+  --pair-red: 0 85% 55%;
+  --pair-black: 0 0% 15%;
+  --pair-yellow: 48 95% 55%;
+  --pair-violet: 270 60% 60%;
+  /* Ring colors for visual coding */
+  --pair-blue: 220 90% 56%;
+  --pair-orange: 25 95% 53%;
+  --pair-green: 142 70% 45%;
+  --pair-brown: 25 45% 35%;
+  --pair-slate: 215 15% 50%;
 
   /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
 
@@ -217,19 +217,19 @@
   --shadow-xl: 0px 20px 25px -5px hsl(0 0% 0% / 0.30), 0px 8px 10px -6px hsl(0 0% 0% / 0.30);
   --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.50);
 
-  /* Fiber optic standard colors - Dark mode (same as light mode for accuracy) */
-  --fiber-blue: 220 90% 56%;
-  --fiber-orange: 25 95% 53%;
-  --fiber-green: 142 70% 45%;
-  --fiber-brown: 25 45% 35%;
-  --fiber-slate: 215 15% 50%;
-  --fiber-white: 0 0% 95%;
-  --fiber-red: 0 85% 55%;
-  --fiber-black: 0 0% 15%;
-  --fiber-yellow: 48 95% 55%;
-  --fiber-violet: 270 60% 60%;
-  --fiber-pink: 330 75% 70%;
-  --fiber-aqua: 180 70% 50%;
+  /* 25-pair copper cable color codes (tip/ring combinations) - Dark mode (same as light mode for accuracy) */
+  /* Tip colors for visual coding */
+  --pair-white: 0 0% 95%;
+  --pair-red: 0 85% 55%;
+  --pair-black: 0 0% 15%;
+  --pair-yellow: 48 95% 55%;
+  --pair-violet: 270 60% 60%;
+  /* Ring colors for visual coding */
+  --pair-blue: 220 90% 56%;
+  --pair-orange: 25 95% 53%;
+  --pair-green: 142 70% 45%;
+  --pair-brown: 25 45% 35%;
+  --pair-slate: 215 15% 50%;
 
   /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -422,7 +422,7 @@
     box-shadow: none !important;
   }
 
-  /* Ensure fiber colors print correctly */
+  /* Ensure pair colors print correctly */
   [style*="background-color"] {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
