@@ -44,6 +44,8 @@ export default function Home() {
   const [cableDialogOpen, setCableDialogOpen] = useState(false);
   const [editingCable, setEditingCable] = useState<Cable | null>(null);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [saveFileName, setSaveFileName] = useState("");
 
   const { data: cables = [], isLoading: cablesLoading } = useQuery<Cable[]>({
     queryKey: ["/api/cables"],
@@ -131,7 +133,12 @@ export default function Home() {
     },
   });
 
-  const handleSave = () => {
+  const handleSaveClick = () => {
+    setSaveFileName(""); // Clear previous filename
+    setSaveDialogOpen(true);
+  };
+
+  const handleSaveConfirm = () => {
     const projectData = {
       cables,
       circuits: allCircuits,
@@ -151,11 +158,20 @@ export default function Home() {
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `fiber-splice-project-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+    
+    // Use user-provided filename or default
+    const filename = saveFileName.trim() 
+      ? `${saveFileName.trim()}.json`
+      : `fiber-splice-project-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+    
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    
+    setSaveDialogOpen(false);
+    setSaveFileName("");
     
     toast({ 
       title: "Project saved", 
@@ -258,7 +274,7 @@ export default function Home() {
               <Button
                 variant="default"
                 size="sm"
-                onClick={handleSave}
+                onClick={handleSaveClick}
                 data-testid="button-save"
               >
                 <Save className="h-4 w-4 mr-2" />
@@ -700,6 +716,56 @@ export default function Home() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+        <DialogContent data-testid="dialog-save-filename">
+          <DialogHeader>
+            <DialogTitle>Save Project</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="filename" className="text-sm font-medium">
+                Project Name (optional)
+              </label>
+              <Input
+                id="filename"
+                placeholder="e.g., Main Street Splice"
+                value={saveFileName}
+                onChange={(e) => setSaveFileName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSaveConfirm();
+                  }
+                }}
+                data-testid="input-save-filename"
+                autoFocus
+              />
+              <p className="text-xs text-muted-foreground">
+                Leave empty to use automatic timestamp
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSaveDialogOpen(false);
+                setSaveFileName("");
+              }}
+              data-testid="button-save-cancel"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveConfirm}
+              data-testid="button-save-confirm"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );
