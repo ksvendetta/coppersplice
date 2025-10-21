@@ -566,7 +566,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
                   const binderDisplay = getBinderAndPairDisplay(
                     circuit.fiberStart,
                     circuit.fiberEnd,
-                    cable.ribbonSize
+                    25
                   );
                   const isEditing = editingCircuitId === circuit.id;
                   
