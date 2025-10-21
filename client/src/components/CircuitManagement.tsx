@@ -46,7 +46,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       return await apiRequest("POST", "/api/circuits", data);
     },
     onSuccess: async () => {
-      // Force refetch to update UI
       await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
       await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
       setCircuitId("");
@@ -66,13 +65,11 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       return await apiRequest("DELETE", `/api/circuits/${id}`, undefined);
     },
     onSuccess: async () => {
-      // Force refetch to update UI
       await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
       await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
       toast({ title: "Circuit deleted successfully" });
     },
     onError: async (error: any) => {
-      // If circuit doesn't exist (404), still remove from UI
       if (error?.message?.includes("not found") || error?.message?.includes("404")) {
         await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
         await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
@@ -97,12 +94,10 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       });
     },
     onSuccess: async () => {
-      // Force refetch to update UI
       await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
       await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
     },
     onError: async (error: any) => {
-      // If circuit doesn't exist (404), refresh the UI
       if (error?.message?.includes("not found") || error?.message?.includes("404")) {
         await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
         await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
@@ -122,7 +117,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       return await apiRequest("PATCH", `/api/circuits/${id}/update-circuit-id`, { circuitId });
     },
     onSuccess: async () => {
-      // Force refetch to update UI with recalculated fiber positions
       await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
       await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
       setEditingCircuitId(null);
@@ -143,7 +137,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       return await apiRequest("PATCH", `/api/circuits/${id}/move`, { direction });
     },
     onSuccess: async () => {
-      // Force refetch to update UI with new positions and recalculated fiber positions
       await queryClient.refetchQueries({ queryKey: ["/api/circuits/cable", cable.id] });
       await queryClient.refetchQueries({ queryKey: ["/api/circuits"] });
       toast({ title: "Circuit moved successfully" });
@@ -155,7 +148,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
 
   const handleCheckboxChange = (circuit: Circuit, checked: boolean) => {
     if (cable.type === "Distribution" && checked) {
-      // Parse Distribution circuit ID to extract prefix and range
       const distParts = circuit.circuitId.split(',');
       if (distParts.length !== 2) {
         toast({
@@ -178,28 +170,23 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       const distStart = parseInt(distRangeParts[0]);
       const distEnd = parseInt(distRangeParts[1]);
       
-      // Find matching circuit in Feed cables where the Distribution range is within the Feed range
       const matchingFeedCircuit = allCircuits.find(c => {
         const feedCable = allCables.find(cable => cable.id === c.cableId);
         if (feedCable?.type !== "Feed") return false;
         
-        // Parse Feed circuit ID
         const feedParts = c.circuitId.split(',');
         if (feedParts.length !== 2) return false;
         
         const feedPrefix = feedParts[0].trim();
         
-        // Check if prefixes match
         if (feedPrefix !== distributionPrefix) return false;
         
-        // Parse Feed range
         const feedRangeParts = feedParts[1].trim().split('-');
         if (feedRangeParts.length !== 2) return false;
         
         const feedStart = parseInt(feedRangeParts[0]);
         const feedEnd = parseInt(feedRangeParts[1]);
         
-        // Check if Distribution range is within Feed range
         const isWithinRange = distStart >= feedStart && distEnd <= feedEnd;
         
         return isWithinRange;
@@ -214,31 +201,26 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
         return;
       }
 
-      // Get the Feed cable for this circuit
       const feedCable = allCables.find(c => c.id === matchingFeedCircuit.cableId);
       
-      // Parse Feed circuit range to calculate the specific fiber subset
       const feedParts = matchingFeedCircuit.circuitId.split(',');
       const feedRangeParts = feedParts[1].trim().split('-');
       const feedStart = parseInt(feedRangeParts[0]);
       const feedEnd = parseInt(feedRangeParts[1]);
       
-      // Calculate offset: where does the Distribution range start within the Feed range?
       const offsetFromFeedStart = distStart - feedStart;
       const offsetFromFeedEnd = distEnd - feedStart;
       
-      // Calculate the actual Feed fiber positions for this subset
-      const calculatedFeedFiberStart = matchingFeedCircuit.fiberStart + offsetFromFeedStart;
-      const calculatedFeedFiberEnd = matchingFeedCircuit.fiberStart + offsetFromFeedEnd;
+      const calculatedFeedPairStart = matchingFeedCircuit.fiberStart + offsetFromFeedStart;
+      const calculatedFeedPairEnd = matchingFeedCircuit.fiberStart + offsetFromFeedEnd;
       
       toggleSplicedMutation.mutate({
         circuitId: circuit.id,
         feedCableId: feedCable?.id,
-        feedFiberStart: calculatedFeedFiberStart,
-        feedFiberEnd: calculatedFeedFiberEnd,
+        feedFiberStart: calculatedFeedPairStart,
+        feedFiberEnd: calculatedFeedPairEnd,
       });
     } else {
-      // Unchecking - just toggle without feed cable info
       toggleSplicedMutation.mutate({ circuitId: circuit.id });
     }
   };
@@ -253,7 +235,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     setEditingCircuitValue("");
   };
 
-  // Helper function to parse circuit ID and check for duplicates
   const parseAndCheckCircuitId = (newCircuitId: string, excludeCircuitId?: string) => {
     const parts = newCircuitId.split(',');
     if (parts.length !== 2) {
@@ -275,7 +256,6 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       return { valid: false, error: 'Range values must be numbers' };
     }
     
-    // Check for overlap with existing circuits
     for (const circuit of circuits) {
       if (excludeCircuitId && circuit.id === excludeCircuitId) continue;
       
@@ -293,9 +273,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       
       if (isNaN(existingStart) || isNaN(existingEnd)) continue;
       
-      // Check if same prefix
       if (newPrefix === existingPrefix) {
-        // Check for overlap: ranges overlap if newStart <= existingEnd AND newEnd >= existingStart
         if (newStart <= existingEnd && newEnd >= existingStart) {
           return { 
             valid: false, 
@@ -357,57 +335,70 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     });
   };
 
-  const totalAssignedFibers = useMemo(() => {
+  const totalAssignedPairs = useMemo(() => {
     return circuits.reduce((sum, circuit) => {
       return sum + (circuit.fiberEnd - circuit.fiberStart + 1);
     }, 0);
   }, [circuits]);
 
   const validationStatus = useMemo(() => {
-    return totalAssignedFibers === cable.fiberCount;
-  }, [totalAssignedFibers, cable.fiberCount]);
+    return totalAssignedPairs === cable.fiberCount;
+  }, [totalAssignedPairs, cable.fiberCount]);
 
-  // Fiber optic color codes (12 colors, repeating pattern)
-  const fiberColors = [
-    { name: "blue", bg: "bg-blue-500", text: "text-white", colorClass: "text-blue-500" },
-    { name: "orange", bg: "bg-orange-500", text: "text-white", colorClass: "text-orange-500" },
-    { name: "green", bg: "bg-green-600", text: "text-white", colorClass: "text-green-600" },
-    { name: "brown", bg: "bg-amber-700", text: "text-white", colorClass: "text-amber-700" },
-    { name: "slate", bg: "bg-slate-500", text: "text-white", colorClass: "text-slate-500" },
+  // 25-pair copper cable color codes (tip colors for visual coding)
+  const pairColors = [
+    { name: "white", bg: "bg-white", text: "text-black", colorClass: "text-slate-700" },
+    { name: "white", bg: "bg-white", text: "text-black", colorClass: "text-slate-700" },
+    { name: "white", bg: "bg-white", text: "text-black", colorClass: "text-slate-700" },
+    { name: "white", bg: "bg-white", text: "text-black", colorClass: "text-slate-700" },
     { name: "white", bg: "bg-white", text: "text-black", colorClass: "text-slate-700" },
     { name: "red", bg: "bg-red-600", text: "text-white", colorClass: "text-red-600" },
+    { name: "red", bg: "bg-red-600", text: "text-white", colorClass: "text-red-600" },
+    { name: "red", bg: "bg-red-600", text: "text-white", colorClass: "text-red-600" },
+    { name: "red", bg: "bg-red-600", text: "text-white", colorClass: "text-red-600" },
+    { name: "red", bg: "bg-red-600", text: "text-white", colorClass: "text-red-600" },
+    { name: "black", bg: "bg-black", text: "text-white", colorClass: "text-slate-900" },
+    { name: "black", bg: "bg-black", text: "text-white", colorClass: "text-slate-900" },
+    { name: "black", bg: "bg-black", text: "text-white", colorClass: "text-slate-900" },
+    { name: "black", bg: "bg-black", text: "text-white", colorClass: "text-slate-900" },
     { name: "black", bg: "bg-black", text: "text-white", colorClass: "text-slate-900" },
     { name: "yellow", bg: "bg-yellow-400", text: "text-black", colorClass: "text-yellow-500" },
+    { name: "yellow", bg: "bg-yellow-400", text: "text-black", colorClass: "text-yellow-500" },
+    { name: "yellow", bg: "bg-yellow-400", text: "text-black", colorClass: "text-yellow-500" },
+    { name: "yellow", bg: "bg-yellow-400", text: "text-black", colorClass: "text-yellow-500" },
+    { name: "yellow", bg: "bg-yellow-400", text: "text-black", colorClass: "text-yellow-500" },
     { name: "violet", bg: "bg-purple-600", text: "text-white", colorClass: "text-purple-600" },
-    { name: "pink", bg: "bg-pink-500", text: "text-white", colorClass: "text-pink-500" },
-    { name: "aqua", bg: "bg-cyan-400", text: "text-black", colorClass: "text-cyan-500" },
+    { name: "violet", bg: "bg-purple-600", text: "text-white", colorClass: "text-purple-600" },
+    { name: "violet", bg: "bg-purple-600", text: "text-white", colorClass: "text-purple-600" },
+    { name: "violet", bg: "bg-purple-600", text: "text-white", colorClass: "text-purple-600" },
+    { name: "violet", bg: "bg-purple-600", text: "text-white", colorClass: "text-purple-600" },
   ];
 
   const getColorForNumber = (num: number) => {
     if (num < 1) {
-      console.error(`Invalid fiber/ribbon number: ${num}`);
-      return fiberColors[0]; // Default to blue
+      console.error(`Invalid pair/binder number: ${num}`);
+      return pairColors[0];
     }
-    return fiberColors[(num - 1) % 12];
+    return pairColors[(num - 1) % 25];
   };
 
-  const getRibbonAndStrandDisplay = (fiberStart: number, fiberEnd: number, ribbonSize: number) => {
-    const startRibbon = Math.ceil(fiberStart / ribbonSize);
-    const endRibbon = Math.ceil(fiberEnd / ribbonSize);
+  const getBinderAndPairDisplay = (pairStart: number, pairEnd: number, binderSize: number) => {
+    const startBinder = Math.ceil(pairStart / binderSize);
+    const endBinder = Math.ceil(pairEnd / binderSize);
     
-    const startStrand = ((fiberStart - 1) % ribbonSize) + 1;
-    const endStrand = ((fiberEnd - 1) % ribbonSize) + 1;
+    const startPairInBinder = ((pairStart - 1) % binderSize) + 1;
+    const endPairInBinder = ((pairEnd - 1) % binderSize) + 1;
     
-    const ColoredRibbon = ({ num }: { num: number }) => {
+    const ColoredBinder = ({ num }: { num: number }) => {
       const color = getColorForNumber(num);
       return (
         <span className={`inline-block px-2 py-0.5 rounded border-2 ${color.colorClass} font-mono font-semibold text-xs`} style={{ borderColor: 'currentColor' }}>
-          R{num}
+          B{num}
         </span>
       );
     };
     
-    const ColoredStrand = ({ num }: { num: number }) => {
+    const ColoredPair = ({ num }: { num: number }) => {
       const color = getColorForNumber(num);
       return (
         <span className={`inline-block px-2 py-0.5 rounded border border-black ${color.bg} ${color.text} font-mono font-semibold text-xs`}>
@@ -416,91 +407,79 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       );
     };
     
-    if (startRibbon === endRibbon) {
-      // Single ribbon - always show strand range
+    if (startBinder === endBinder) {
       return (
         <span className="flex items-center gap-1">
-          <ColoredRibbon num={startRibbon} />
+          <ColoredBinder num={startBinder} />
           <span>:</span>
-          <ColoredStrand num={startStrand} />
+          <ColoredPair num={startPairInBinder} />
           <span>-</span>
-          <ColoredStrand num={endStrand} />
+          <ColoredPair num={endPairInBinder} />
         </span>
       );
     } else {
-      // Multiple ribbons
       const parts = [];
       
-      // Check if we start with a partial ribbon
-      const startsWithPartialRibbon = startStrand !== 1;
-      // Check if we end with a partial ribbon
-      const endsWithPartialRibbon = endStrand !== ribbonSize;
+      const startsWithPartialBinder = startPairInBinder !== 1;
+      const endsWithPartialBinder = endPairInBinder !== binderSize;
       
-      // If no partial ribbons, use compact ribbon range format
-      if (!startsWithPartialRibbon && !endsWithPartialRibbon) {
-        if (startRibbon === endRibbon - 1) {
-          // Two consecutive ribbons
+      if (!startsWithPartialBinder && !endsWithPartialBinder) {
+        if (startBinder === endBinder - 1) {
           return (
             <span className="flex items-center gap-1">
-              <ColoredRibbon num={startRibbon} />
+              <ColoredBinder num={startBinder} />
               <span>-</span>
-              <ColoredRibbon num={endRibbon} />
+              <ColoredBinder num={endBinder} />
             </span>
           );
         } else {
-          // More than two ribbons
           return (
             <span className="flex items-center gap-1">
-              <ColoredRibbon num={startRibbon} />
+              <ColoredBinder num={startBinder} />
               <span>-</span>
-              <ColoredRibbon num={endRibbon} />
+              <ColoredBinder num={endBinder} />
             </span>
           );
         }
       }
       
-      // Has partial ribbons, show each ribbon with strand ranges
-      if (startsWithPartialRibbon) {
-        // First ribbon is partial
+      if (startsWithPartialBinder) {
         parts.push(
-          <span key={`start-${startRibbon}`} className="flex items-center gap-1">
-            <ColoredRibbon num={startRibbon} />
+          <span key={`start-${startBinder}`} className="flex items-center gap-1">
+            <ColoredBinder num={startBinder} />
             <span>:</span>
-            <ColoredStrand num={startStrand} />
+            <ColoredPair num={startPairInBinder} />
             <span>-</span>
-            <ColoredStrand num={ribbonSize} />
+            <ColoredPair num={binderSize} />
           </span>
         );
       }
       
-      // Determine the range of full ribbons
-      const firstFullRibbon = startsWithPartialRibbon ? startRibbon + 1 : startRibbon;
-      const lastFullRibbon = endsWithPartialRibbon ? endRibbon - 1 : endRibbon;
+      const firstFullBinder = startsWithPartialBinder ? startBinder + 1 : startBinder;
+      const lastFullBinder = endsWithPartialBinder ? endBinder - 1 : endBinder;
       
-      // Add full ribbons with explicit strand ranges
-      if (firstFullRibbon <= lastFullRibbon) {
-        for (let r = firstFullRibbon; r <= lastFullRibbon; r++) {
+      if (firstFullBinder <= lastFullBinder) {
+        for (let r = firstFullBinder; r <= lastFullBinder; r++) {
           parts.push(
             <span key={`full-${r}`} className="flex items-center gap-1">
-              <ColoredRibbon num={r} />
+              <ColoredBinder num={r} />
               <span>:</span>
-              <ColoredStrand num={1} />
+              <ColoredPair num={1} />
               <span>-</span>
-              <ColoredStrand num={ribbonSize} />
+              <ColoredPair num={binderSize} />
             </span>
           );
         }
       }
       
-      if (endsWithPartialRibbon) {
-        // Last ribbon is partial
+      if (endsWithPartialBinder) {
         parts.push(
-          <span key={`end-${endRibbon}`} className="flex items-center gap-1">
-            <ColoredRibbon num={endRibbon} />
+          <span key={`end-${endBinder}`} className="flex items-center gap-1">
+            <ColoredBinder num={endBinder} />
             <span>:</span>
-            <ColoredStrand num={1} />
+            <ColoredPair num={1} />
             <span>-</span>
-            <ColoredStrand num={endStrand} />
+            <ColoredPair num={endPairInBinder} />
           </span>
         );
       }
@@ -538,7 +517,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
             </Badge>
           )}
           <span className="text-sm text-muted-foreground" data-testid="text-cable-size">
-            Total Fiber Count: {totalAssignedFibers}/{cable.fiberCount}
+            Total Pair Count: {totalAssignedPairs}/{cable.fiberCount}
           </span>
         </div>
       </CardHeader>
@@ -577,14 +556,14 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
                     <TableHead className="w-[10%]">Splice</TableHead>
                   )}
                   <TableHead className={cable.type === "Distribution" ? "w-[30%]" : "w-[35%]"}>Circuit ID</TableHead>
-                  <TableHead>Fiber Strands</TableHead>
-                  <TableHead className="w-[12%]">Fiber Count</TableHead>
+                  <TableHead>Copper Pairs</TableHead>
+                  <TableHead className="w-[12%]">Pair Count</TableHead>
                   <TableHead className="w-[15%] text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {circuits.map((circuit, index) => {
-                  const ribbonDisplay = getRibbonAndStrandDisplay(
+                  const binderDisplay = getBinderAndPairDisplay(
                     circuit.fiberStart,
                     circuit.fiberEnd,
                     cable.ribbonSize
@@ -620,10 +599,10 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
                           circuit.circuitId
                         )}
                       </TableCell>
-                      <TableCell className="font-mono text-sm" data-testid={`text-fiber-range-${circuit.id}`}>
-                        {ribbonDisplay}
+                      <TableCell className="font-mono text-sm" data-testid={`text-pair-range-${circuit.id}`}>
+                        {binderDisplay}
                       </TableCell>
-                      <TableCell className="text-sm" data-testid={`text-fiber-count-${circuit.id}`}>
+                      <TableCell className="text-sm" data-testid={`text-pair-count-${circuit.id}`}>
                         {circuit.fiberEnd - circuit.fiberStart + 1}
                       </TableCell>
                       <TableCell className="text-right">
