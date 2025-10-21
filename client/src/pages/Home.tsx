@@ -474,31 +474,31 @@ export default function Home() {
                               
                               // 25-pair copper cable color codes (tip/ring combinations with actual color values)
                               const pairColors = [
-                                { pair: 1, tip: "white", ring: "blue", tipColor: "#f1f5f9", ringColor: "#3b82f6" },
-                                { pair: 2, tip: "white", ring: "orange", tipColor: "#f1f5f9", ringColor: "#f97316" },
-                                { pair: 3, tip: "white", ring: "green", tipColor: "#f1f5f9", ringColor: "#16a34a" },
-                                { pair: 4, tip: "white", ring: "brown", tipColor: "#f1f5f9", ringColor: "#b45309" },
-                                { pair: 5, tip: "white", ring: "slate", tipColor: "#f1f5f9", ringColor: "#64748b" },
-                                { pair: 6, tip: "red", ring: "blue", tipColor: "#dc2626", ringColor: "#3b82f6" },
-                                { pair: 7, tip: "red", ring: "orange", tipColor: "#dc2626", ringColor: "#f97316" },
-                                { pair: 8, tip: "red", ring: "green", tipColor: "#dc2626", ringColor: "#16a34a" },
-                                { pair: 9, tip: "red", ring: "brown", tipColor: "#dc2626", ringColor: "#b45309" },
-                                { pair: 10, tip: "red", ring: "slate", tipColor: "#dc2626", ringColor: "#64748b" },
-                                { pair: 11, tip: "black", ring: "blue", tipColor: "#0f172a", ringColor: "#3b82f6" },
-                                { pair: 12, tip: "black", ring: "orange", tipColor: "#0f172a", ringColor: "#f97316" },
-                                { pair: 13, tip: "black", ring: "green", tipColor: "#0f172a", ringColor: "#16a34a" },
-                                { pair: 14, tip: "black", ring: "brown", tipColor: "#0f172a", ringColor: "#b45309" },
-                                { pair: 15, tip: "black", ring: "slate", tipColor: "#0f172a", ringColor: "#64748b" },
-                                { pair: 16, tip: "yellow", ring: "blue", tipColor: "#facc15", ringColor: "#3b82f6" },
-                                { pair: 17, tip: "yellow", ring: "orange", tipColor: "#facc15", ringColor: "#f97316" },
-                                { pair: 18, tip: "yellow", ring: "green", tipColor: "#facc15", ringColor: "#16a34a" },
-                                { pair: 19, tip: "yellow", ring: "brown", tipColor: "#facc15", ringColor: "#b45309" },
-                                { pair: 20, tip: "yellow", ring: "slate", tipColor: "#facc15", ringColor: "#64748b" },
-                                { pair: 21, tip: "violet", ring: "blue", tipColor: "#9333ea", ringColor: "#3b82f6" },
-                                { pair: 22, tip: "violet", ring: "orange", tipColor: "#9333ea", ringColor: "#f97316" },
-                                { pair: 23, tip: "violet", ring: "green", tipColor: "#9333ea", ringColor: "#16a34a" },
-                                { pair: 24, tip: "violet", ring: "brown", tipColor: "#9333ea", ringColor: "#b45309" },
-                                { pair: 25, tip: "violet", ring: "slate", tipColor: "#9333ea", ringColor: "#64748b" },
+                                { pair: 1, tip: "white", ring: "blue", tipColor: "#f1f5f9", ringColor: "#3b82f6", textColor: "#ffffff" },
+                                { pair: 2, tip: "white", ring: "orange", tipColor: "#f1f5f9", ringColor: "#f97316", textColor: "#000000" },
+                                { pair: 3, tip: "white", ring: "green", tipColor: "#f1f5f9", ringColor: "#16a34a", textColor: "#ffffff" },
+                                { pair: 4, tip: "white", ring: "brown", tipColor: "#f1f5f9", ringColor: "#b45309", textColor: "#ffffff" },
+                                { pair: 5, tip: "white", ring: "slate", tipColor: "#f1f5f9", ringColor: "#64748b", textColor: "#ffffff" },
+                                { pair: 6, tip: "red", ring: "blue", tipColor: "#dc2626", ringColor: "#3b82f6", textColor: "#ffffff" },
+                                { pair: 7, tip: "red", ring: "orange", tipColor: "#dc2626", ringColor: "#f97316", textColor: "#000000" },
+                                { pair: 8, tip: "red", ring: "green", tipColor: "#dc2626", ringColor: "#16a34a", textColor: "#ffffff" },
+                                { pair: 9, tip: "red", ring: "brown", tipColor: "#dc2626", ringColor: "#b45309", textColor: "#ffffff" },
+                                { pair: 10, tip: "red", ring: "slate", tipColor: "#dc2626", ringColor: "#64748b", textColor: "#ffffff" },
+                                { pair: 11, tip: "black", ring: "blue", tipColor: "#0f172a", ringColor: "#3b82f6", textColor: "#ffffff" },
+                                { pair: 12, tip: "black", ring: "orange", tipColor: "#0f172a", ringColor: "#f97316", textColor: "#000000" },
+                                { pair: 13, tip: "black", ring: "green", tipColor: "#0f172a", ringColor: "#16a34a", textColor: "#ffffff" },
+                                { pair: 14, tip: "black", ring: "brown", tipColor: "#0f172a", ringColor: "#b45309", textColor: "#ffffff" },
+                                { pair: 15, tip: "black", ring: "slate", tipColor: "#0f172a", ringColor: "#64748b", textColor: "#ffffff" },
+                                { pair: 16, tip: "yellow", ring: "blue", tipColor: "#facc15", ringColor: "#3b82f6", textColor: "#ffffff" },
+                                { pair: 17, tip: "yellow", ring: "orange", tipColor: "#facc15", ringColor: "#f97316", textColor: "#000000" },
+                                { pair: 18, tip: "yellow", ring: "green", tipColor: "#facc15", ringColor: "#16a34a", textColor: "#ffffff" },
+                                { pair: 19, tip: "yellow", ring: "brown", tipColor: "#facc15", ringColor: "#b45309", textColor: "#ffffff" },
+                                { pair: 20, tip: "yellow", ring: "slate", tipColor: "#facc15", ringColor: "#64748b", textColor: "#ffffff" },
+                                { pair: 21, tip: "violet", ring: "blue", tipColor: "#9333ea", ringColor: "#3b82f6", textColor: "#ffffff" },
+                                { pair: 22, tip: "violet", ring: "orange", tipColor: "#9333ea", ringColor: "#f97316", textColor: "#000000" },
+                                { pair: 23, tip: "violet", ring: "green", tipColor: "#9333ea", ringColor: "#16a34a", textColor: "#ffffff" },
+                                { pair: 24, tip: "violet", ring: "brown", tipColor: "#9333ea", ringColor: "#b45309", textColor: "#ffffff" },
+                                { pair: 25, tip: "violet", ring: "slate", tipColor: "#9333ea", ringColor: "#64748b", textColor: "#ffffff" },
                               ];
                               
                               const binderSize = 25;
@@ -611,7 +611,8 @@ export default function Home() {
                                       ${feedBinderColor.ringColor} 33%, 
                                       ${feedBinderColor.ringColor} 67%, 
                                       ${feedBinderColor.tipColor} 67%, 
-                                      ${feedBinderColor.tipColor} 100%)`
+                                      ${feedBinderColor.tipColor} 100%)`,
+                                    color: feedBinderColor.textColor
                                   };
                                   const distBinderGradient = {
                                     background: `linear-gradient(to right, 
@@ -620,21 +621,22 @@ export default function Home() {
                                       ${distBinderColor.ringColor} 33%, 
                                       ${distBinderColor.ringColor} 67%, 
                                       ${distBinderColor.tipColor} 67%, 
-                                      ${distBinderColor.tipColor} 100%)`
+                                      ${distBinderColor.tipColor} 100%)`,
+                                    color: distBinderColor.textColor
                                   };
                                   
                                   binderRows.push(
                                     <TableRow key={`${circuit.id}-segment-${currentDistPair}`} className={rowBgColor} data-testid={`row-binder-${circuit.id}-${currentDistPair}`}>
                                       <TableCell className="text-center font-mono text-sm">{feedCable.name} - {feedCable.fiberCount}</TableCell>
                                       <TableCell className="text-center font-mono font-semibold">
-                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={feedBinderGradient}>
+                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black font-mono font-semibold text-xs" style={feedBinderGradient}>
                                           B{currentFeedBinder}
                                         </span>
                                         :{feedPairPosStart}{feedPairPosStart !== feedPairPosEnd ? `-${feedPairPosEnd}` : ''}
                                       </TableCell>
                                       <TableCell className="text-center font-mono font-semibold">{circuitPrefix},{circuitStart}-{circuitEnd}</TableCell>
                                       <TableCell className="text-center font-mono font-semibold">
-                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={distBinderGradient}>
+                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black font-mono font-semibold text-xs" style={distBinderGradient}>
                                           B{currentDistBinder}
                                         </span>
                                         :{distPairPosStart}{distPairPosStart !== distPairPosEnd ? `-${distPairPosEnd}` : ''}
@@ -686,7 +688,8 @@ export default function Home() {
                                       ${feedColor.ringColor} 33%, 
                                       ${feedColor.ringColor} 67%, 
                                       ${feedColor.tipColor} 67%, 
-                                      ${feedColor.tipColor} 100%)`
+                                      ${feedColor.tipColor} 100%)`,
+                                    color: feedColor.textColor
                                   };
                                   const distGradient = {
                                     background: `linear-gradient(to right, 
@@ -695,7 +698,8 @@ export default function Home() {
                                       ${distColor.ringColor} 33%, 
                                       ${distColor.ringColor} 67%, 
                                       ${distColor.tipColor} 67%, 
-                                      ${distColor.tipColor} 100%)`
+                                      ${distColor.tipColor} 100%)`,
+                                    color: distColor.textColor
                                   };
                                   const feedBinderGradient = {
                                     background: `linear-gradient(to right, 
@@ -704,7 +708,8 @@ export default function Home() {
                                       ${feedBinderColor.ringColor} 33%, 
                                       ${feedBinderColor.ringColor} 67%, 
                                       ${feedBinderColor.tipColor} 67%, 
-                                      ${feedBinderColor.tipColor} 100%)`
+                                      ${feedBinderColor.tipColor} 100%)`,
+                                    color: feedBinderColor.textColor
                                   };
                                   const distBinderGradient = {
                                     background: `linear-gradient(to right, 
@@ -713,30 +718,31 @@ export default function Home() {
                                       ${distBinderColor.ringColor} 33%, 
                                       ${distBinderColor.ringColor} 67%, 
                                       ${distBinderColor.tipColor} 67%, 
-                                      ${distBinderColor.tipColor} 100%)`
+                                      ${distBinderColor.tipColor} 100%)`,
+                                    color: distBinderColor.textColor
                                   };
                                   
                                   pairRows.push(
                                     <TableRow key={`${circuit.id}-pair-${i}`} className={rowBgColor} data-testid={`row-pair-${circuit.id}-${i}`}>
                                       <TableCell className="text-center font-mono text-sm">{feedCable.name} - {feedCable.fiberCount}</TableCell>
                                       <TableCell className="text-center font-mono font-semibold">
-                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={feedBinderGradient}>
+                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black font-mono font-semibold text-xs" style={feedBinderGradient}>
                                           B{feedBinder}
                                         </span>
                                       </TableCell>
                                       <TableCell className="text-center">
-                                        <div className="inline-block px-3 py-1 rounded border-2 border-black text-black font-mono font-semibold" style={feedGradient}>
+                                        <div className="inline-block px-3 py-1 rounded border-2 border-black font-mono font-semibold" style={feedGradient}>
                                           {feedPairInBinder}
                                         </div>
                                       </TableCell>
                                       <TableCell className="text-center font-mono font-semibold">{circuitPrefix},{circuitNumber}</TableCell>
                                       <TableCell className="text-center">
-                                        <div className="inline-block px-3 py-1 rounded border-2 border-black text-black font-mono font-semibold" style={distGradient}>
+                                        <div className="inline-block px-3 py-1 rounded border-2 border-black font-mono font-semibold" style={distGradient}>
                                           {distPairInBinder}
                                         </div>
                                       </TableCell>
                                       <TableCell className="text-center font-mono font-semibold">
-                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={distBinderGradient}>
+                                        <span className="inline-block px-2 py-0.5 rounded border-2 border-black font-mono font-semibold text-xs" style={distBinderGradient}>
                                           B{distBinder}
                                         </span>
                                       </TableCell>

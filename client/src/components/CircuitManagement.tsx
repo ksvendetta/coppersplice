@@ -347,31 +347,31 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
 
   // 25-pair copper cable color codes (tip/ring combinations with actual color values)
   const pairColors = [
-    { tip: "white", ring: "blue", tipColor: "#f1f5f9", ringColor: "#3b82f6" },
-    { tip: "white", ring: "orange", tipColor: "#f1f5f9", ringColor: "#f97316" },
-    { tip: "white", ring: "green", tipColor: "#f1f5f9", ringColor: "#16a34a" },
-    { tip: "white", ring: "brown", tipColor: "#f1f5f9", ringColor: "#b45309" },
-    { tip: "white", ring: "slate", tipColor: "#f1f5f9", ringColor: "#64748b" },
-    { tip: "red", ring: "blue", tipColor: "#dc2626", ringColor: "#3b82f6" },
-    { tip: "red", ring: "orange", tipColor: "#dc2626", ringColor: "#f97316" },
-    { tip: "red", ring: "green", tipColor: "#dc2626", ringColor: "#16a34a" },
-    { tip: "red", ring: "brown", tipColor: "#dc2626", ringColor: "#b45309" },
-    { tip: "red", ring: "slate", tipColor: "#dc2626", ringColor: "#64748b" },
-    { tip: "black", ring: "blue", tipColor: "#0f172a", ringColor: "#3b82f6" },
-    { tip: "black", ring: "orange", tipColor: "#0f172a", ringColor: "#f97316" },
-    { tip: "black", ring: "green", tipColor: "#0f172a", ringColor: "#16a34a" },
-    { tip: "black", ring: "brown", tipColor: "#0f172a", ringColor: "#b45309" },
-    { tip: "black", ring: "slate", tipColor: "#0f172a", ringColor: "#64748b" },
-    { tip: "yellow", ring: "blue", tipColor: "#facc15", ringColor: "#3b82f6" },
-    { tip: "yellow", ring: "orange", tipColor: "#facc15", ringColor: "#f97316" },
-    { tip: "yellow", ring: "green", tipColor: "#facc15", ringColor: "#16a34a" },
-    { tip: "yellow", ring: "brown", tipColor: "#facc15", ringColor: "#b45309" },
-    { tip: "yellow", ring: "slate", tipColor: "#facc15", ringColor: "#64748b" },
-    { tip: "violet", ring: "blue", tipColor: "#9333ea", ringColor: "#3b82f6" },
-    { tip: "violet", ring: "orange", tipColor: "#9333ea", ringColor: "#f97316" },
-    { tip: "violet", ring: "green", tipColor: "#9333ea", ringColor: "#16a34a" },
-    { tip: "violet", ring: "brown", tipColor: "#9333ea", ringColor: "#b45309" },
-    { tip: "violet", ring: "slate", tipColor: "#9333ea", ringColor: "#64748b" },
+    { tip: "white", ring: "blue", tipColor: "#f1f5f9", ringColor: "#3b82f6", textColor: "#ffffff" },
+    { tip: "white", ring: "orange", tipColor: "#f1f5f9", ringColor: "#f97316", textColor: "#000000" },
+    { tip: "white", ring: "green", tipColor: "#f1f5f9", ringColor: "#16a34a", textColor: "#ffffff" },
+    { tip: "white", ring: "brown", tipColor: "#f1f5f9", ringColor: "#b45309", textColor: "#ffffff" },
+    { tip: "white", ring: "slate", tipColor: "#f1f5f9", ringColor: "#64748b", textColor: "#ffffff" },
+    { tip: "red", ring: "blue", tipColor: "#dc2626", ringColor: "#3b82f6", textColor: "#ffffff" },
+    { tip: "red", ring: "orange", tipColor: "#dc2626", ringColor: "#f97316", textColor: "#000000" },
+    { tip: "red", ring: "green", tipColor: "#dc2626", ringColor: "#16a34a", textColor: "#ffffff" },
+    { tip: "red", ring: "brown", tipColor: "#dc2626", ringColor: "#b45309", textColor: "#ffffff" },
+    { tip: "red", ring: "slate", tipColor: "#dc2626", ringColor: "#64748b", textColor: "#ffffff" },
+    { tip: "black", ring: "blue", tipColor: "#0f172a", ringColor: "#3b82f6", textColor: "#ffffff" },
+    { tip: "black", ring: "orange", tipColor: "#0f172a", ringColor: "#f97316", textColor: "#000000" },
+    { tip: "black", ring: "green", tipColor: "#0f172a", ringColor: "#16a34a", textColor: "#ffffff" },
+    { tip: "black", ring: "brown", tipColor: "#0f172a", ringColor: "#b45309", textColor: "#ffffff" },
+    { tip: "black", ring: "slate", tipColor: "#0f172a", ringColor: "#64748b", textColor: "#ffffff" },
+    { tip: "yellow", ring: "blue", tipColor: "#facc15", ringColor: "#3b82f6", textColor: "#ffffff" },
+    { tip: "yellow", ring: "orange", tipColor: "#facc15", ringColor: "#f97316", textColor: "#000000" },
+    { tip: "yellow", ring: "green", tipColor: "#facc15", ringColor: "#16a34a", textColor: "#ffffff" },
+    { tip: "yellow", ring: "brown", tipColor: "#facc15", ringColor: "#b45309", textColor: "#ffffff" },
+    { tip: "yellow", ring: "slate", tipColor: "#facc15", ringColor: "#64748b", textColor: "#ffffff" },
+    { tip: "violet", ring: "blue", tipColor: "#9333ea", ringColor: "#3b82f6", textColor: "#ffffff" },
+    { tip: "violet", ring: "orange", tipColor: "#9333ea", ringColor: "#f97316", textColor: "#000000" },
+    { tip: "violet", ring: "green", tipColor: "#9333ea", ringColor: "#16a34a", textColor: "#ffffff" },
+    { tip: "violet", ring: "brown", tipColor: "#9333ea", ringColor: "#b45309", textColor: "#ffffff" },
+    { tip: "violet", ring: "slate", tipColor: "#9333ea", ringColor: "#64748b", textColor: "#ffffff" },
   ];
 
   const getColorForNumber = (num: number) => {
@@ -398,10 +398,11 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
           ${color.ringColor} 33%, 
           ${color.ringColor} 67%, 
           ${color.tipColor} 67%, 
-          ${color.tipColor} 100%)`
+          ${color.tipColor} 100%)`,
+        color: color.textColor
       };
       return (
-        <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={gradientStyle}>
+        <span className="inline-block px-2 py-0.5 rounded border-2 border-black font-mono font-semibold text-xs" style={gradientStyle}>
           B{num}
         </span>
       );
@@ -416,10 +417,11 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
           ${color.ringColor} 33%, 
           ${color.ringColor} 67%, 
           ${color.tipColor} 67%, 
-          ${color.tipColor} 100%)`
+          ${color.tipColor} 100%)`,
+        color: color.textColor
       };
       return (
-        <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={gradientStyle}>
+        <span className="inline-block px-2 py-0.5 rounded border-2 border-black font-mono font-semibold text-xs" style={gradientStyle}>
           {num}
         </span>
       );
