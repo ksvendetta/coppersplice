@@ -345,33 +345,33 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     return totalAssignedPairs === cable.fiberCount;
   }, [totalAssignedPairs, cable.fiberCount]);
 
-  // 25-pair copper cable color codes (tip/ring combinations)
+  // 25-pair copper cable color codes (tip/ring combinations with actual color values)
   const pairColors = [
-    { tip: "white", ring: "blue", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-blue-500", ringText: "text-white" },
-    { tip: "white", ring: "orange", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-orange-500", ringText: "text-white" },
-    { tip: "white", ring: "green", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-green-600", ringText: "text-white" },
-    { tip: "white", ring: "brown", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-amber-700", ringText: "text-white" },
-    { tip: "white", ring: "slate", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-slate-500", ringText: "text-white" },
-    { tip: "red", ring: "blue", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-blue-500", ringText: "text-white" },
-    { tip: "red", ring: "orange", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-orange-500", ringText: "text-white" },
-    { tip: "red", ring: "green", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-green-600", ringText: "text-white" },
-    { tip: "red", ring: "brown", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-amber-700", ringText: "text-white" },
-    { tip: "red", ring: "slate", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-slate-500", ringText: "text-white" },
-    { tip: "black", ring: "blue", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-blue-500", ringText: "text-white" },
-    { tip: "black", ring: "orange", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-orange-500", ringText: "text-white" },
-    { tip: "black", ring: "green", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-green-600", ringText: "text-white" },
-    { tip: "black", ring: "brown", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-amber-700", ringText: "text-white" },
-    { tip: "black", ring: "slate", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-slate-500", ringText: "text-white" },
-    { tip: "yellow", ring: "blue", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-blue-500", ringText: "text-white" },
-    { tip: "yellow", ring: "orange", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-orange-500", ringText: "text-white" },
-    { tip: "yellow", ring: "green", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-green-600", ringText: "text-white" },
-    { tip: "yellow", ring: "brown", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-amber-700", ringText: "text-white" },
-    { tip: "yellow", ring: "slate", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-slate-500", ringText: "text-white" },
-    { tip: "violet", ring: "blue", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-blue-500", ringText: "text-white" },
-    { tip: "violet", ring: "orange", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-orange-500", ringText: "text-white" },
-    { tip: "violet", ring: "green", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-green-600", ringText: "text-white" },
-    { tip: "violet", ring: "brown", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-amber-700", ringText: "text-white" },
-    { tip: "violet", ring: "slate", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-slate-500", ringText: "text-white" },
+    { tip: "white", ring: "blue", tipColor: "#64748b", ringColor: "#3b82f6" },
+    { tip: "white", ring: "orange", tipColor: "#64748b", ringColor: "#f97316" },
+    { tip: "white", ring: "green", tipColor: "#64748b", ringColor: "#16a34a" },
+    { tip: "white", ring: "brown", tipColor: "#64748b", ringColor: "#b45309" },
+    { tip: "white", ring: "slate", tipColor: "#64748b", ringColor: "#64748b" },
+    { tip: "red", ring: "blue", tipColor: "#dc2626", ringColor: "#3b82f6" },
+    { tip: "red", ring: "orange", tipColor: "#dc2626", ringColor: "#f97316" },
+    { tip: "red", ring: "green", tipColor: "#dc2626", ringColor: "#16a34a" },
+    { tip: "red", ring: "brown", tipColor: "#dc2626", ringColor: "#b45309" },
+    { tip: "red", ring: "slate", tipColor: "#dc2626", ringColor: "#64748b" },
+    { tip: "black", ring: "blue", tipColor: "#0f172a", ringColor: "#3b82f6" },
+    { tip: "black", ring: "orange", tipColor: "#0f172a", ringColor: "#f97316" },
+    { tip: "black", ring: "green", tipColor: "#0f172a", ringColor: "#16a34a" },
+    { tip: "black", ring: "brown", tipColor: "#0f172a", ringColor: "#b45309" },
+    { tip: "black", ring: "slate", tipColor: "#0f172a", ringColor: "#64748b" },
+    { tip: "yellow", ring: "blue", tipColor: "#facc15", ringColor: "#3b82f6" },
+    { tip: "yellow", ring: "orange", tipColor: "#facc15", ringColor: "#f97316" },
+    { tip: "yellow", ring: "green", tipColor: "#facc15", ringColor: "#16a34a" },
+    { tip: "yellow", ring: "brown", tipColor: "#facc15", ringColor: "#b45309" },
+    { tip: "yellow", ring: "slate", tipColor: "#facc15", ringColor: "#64748b" },
+    { tip: "violet", ring: "blue", tipColor: "#9333ea", ringColor: "#3b82f6" },
+    { tip: "violet", ring: "orange", tipColor: "#9333ea", ringColor: "#f97316" },
+    { tip: "violet", ring: "green", tipColor: "#9333ea", ringColor: "#16a34a" },
+    { tip: "violet", ring: "brown", tipColor: "#9333ea", ringColor: "#b45309" },
+    { tip: "violet", ring: "slate", tipColor: "#9333ea", ringColor: "#64748b" },
   ];
 
   const getColorForNumber = (num: number) => {
@@ -391,16 +391,14 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     
     const ColoredBinder = ({ num }: { num: number }) => {
       const color = getColorForNumber(num);
-      const tipColorValue = color.tipBg.replace('bg-', '');
-      const ringColorValue = color.ringBg.replace('bg-', '');
       const gradientStyle = {
         background: `linear-gradient(to right, 
-          rgb(var(--${tipColorValue})) 0%, 
-          rgb(var(--${tipColorValue})) 33%, 
-          rgb(var(--${ringColorValue})) 33%, 
-          rgb(var(--${ringColorValue})) 67%, 
-          rgb(var(--${tipColorValue})) 67%, 
-          rgb(var(--${tipColorValue})) 100%)`
+          ${color.tipColor} 0%, 
+          ${color.tipColor} 33%, 
+          ${color.ringColor} 33%, 
+          ${color.ringColor} 67%, 
+          ${color.tipColor} 67%, 
+          ${color.tipColor} 100%)`
       };
       return (
         <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={gradientStyle}>
@@ -411,16 +409,14 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
     
     const ColoredPair = ({ num }: { num: number }) => {
       const color = getColorForNumber(num);
-      const tipColorValue = color.tipBg.replace('bg-', '');
-      const ringColorValue = color.ringBg.replace('bg-', '');
       const gradientStyle = {
         background: `linear-gradient(to right, 
-          rgb(var(--${tipColorValue})) 0%, 
-          rgb(var(--${tipColorValue})) 33%, 
-          rgb(var(--${ringColorValue})) 33%, 
-          rgb(var(--${ringColorValue})) 67%, 
-          rgb(var(--${tipColorValue})) 67%, 
-          rgb(var(--${tipColorValue})) 100%)`
+          ${color.tipColor} 0%, 
+          ${color.tipColor} 33%, 
+          ${color.ringColor} 33%, 
+          ${color.ringColor} 67%, 
+          ${color.tipColor} 67%, 
+          ${color.tipColor} 100%)`
       };
       return (
         <span className="inline-block px-2 py-0.5 rounded border-2 border-black text-black font-mono font-semibold text-xs" style={gradientStyle}>

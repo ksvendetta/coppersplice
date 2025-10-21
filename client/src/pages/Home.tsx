@@ -472,33 +472,33 @@ export default function Home() {
                                 )];
                               }
                               
-                              // 25-pair copper cable color codes (tip/ring combinations)
+                              // 25-pair copper cable color codes (tip/ring combinations with actual color values)
                               const pairColors = [
-                                { pair: 1, tip: "white", ring: "blue", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-blue-500", ringText: "text-white" },
-                                { pair: 2, tip: "white", ring: "orange", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-orange-500", ringText: "text-white" },
-                                { pair: 3, tip: "white", ring: "green", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-green-600", ringText: "text-white" },
-                                { pair: 4, tip: "white", ring: "brown", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-amber-700", ringText: "text-white" },
-                                { pair: 5, tip: "white", ring: "slate", tipBg: "bg-slate-700", tipText: "text-slate-700", ringBg: "bg-slate-500", ringText: "text-white" },
-                                { pair: 6, tip: "red", ring: "blue", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-blue-500", ringText: "text-white" },
-                                { pair: 7, tip: "red", ring: "orange", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-orange-500", ringText: "text-white" },
-                                { pair: 8, tip: "red", ring: "green", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-green-600", ringText: "text-white" },
-                                { pair: 9, tip: "red", ring: "brown", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-amber-700", ringText: "text-white" },
-                                { pair: 10, tip: "red", ring: "slate", tipBg: "bg-red-600", tipText: "text-red-600", ringBg: "bg-slate-500", ringText: "text-white" },
-                                { pair: 11, tip: "black", ring: "blue", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-blue-500", ringText: "text-white" },
-                                { pair: 12, tip: "black", ring: "orange", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-orange-500", ringText: "text-white" },
-                                { pair: 13, tip: "black", ring: "green", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-green-600", ringText: "text-white" },
-                                { pair: 14, tip: "black", ring: "brown", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-amber-700", ringText: "text-white" },
-                                { pair: 15, tip: "black", ring: "slate", tipBg: "bg-slate-900", tipText: "text-slate-900", ringBg: "bg-slate-500", ringText: "text-white" },
-                                { pair: 16, tip: "yellow", ring: "blue", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-blue-500", ringText: "text-white" },
-                                { pair: 17, tip: "yellow", ring: "orange", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-orange-500", ringText: "text-white" },
-                                { pair: 18, tip: "yellow", ring: "green", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-green-600", ringText: "text-white" },
-                                { pair: 19, tip: "yellow", ring: "brown", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-amber-700", ringText: "text-white" },
-                                { pair: 20, tip: "yellow", ring: "slate", tipBg: "bg-yellow-400", tipText: "text-yellow-500", ringBg: "bg-slate-500", ringText: "text-white" },
-                                { pair: 21, tip: "violet", ring: "blue", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-blue-500", ringText: "text-white" },
-                                { pair: 22, tip: "violet", ring: "orange", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-orange-500", ringText: "text-white" },
-                                { pair: 23, tip: "violet", ring: "green", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-green-600", ringText: "text-white" },
-                                { pair: 24, tip: "violet", ring: "brown", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-amber-700", ringText: "text-white" },
-                                { pair: 25, tip: "violet", ring: "slate", tipBg: "bg-purple-600", tipText: "text-purple-600", ringBg: "bg-slate-500", ringText: "text-white" },
+                                { pair: 1, tip: "white", ring: "blue", tipColor: "#64748b", ringColor: "#3b82f6" },
+                                { pair: 2, tip: "white", ring: "orange", tipColor: "#64748b", ringColor: "#f97316" },
+                                { pair: 3, tip: "white", ring: "green", tipColor: "#64748b", ringColor: "#16a34a" },
+                                { pair: 4, tip: "white", ring: "brown", tipColor: "#64748b", ringColor: "#b45309" },
+                                { pair: 5, tip: "white", ring: "slate", tipColor: "#64748b", ringColor: "#64748b" },
+                                { pair: 6, tip: "red", ring: "blue", tipColor: "#dc2626", ringColor: "#3b82f6" },
+                                { pair: 7, tip: "red", ring: "orange", tipColor: "#dc2626", ringColor: "#f97316" },
+                                { pair: 8, tip: "red", ring: "green", tipColor: "#dc2626", ringColor: "#16a34a" },
+                                { pair: 9, tip: "red", ring: "brown", tipColor: "#dc2626", ringColor: "#b45309" },
+                                { pair: 10, tip: "red", ring: "slate", tipColor: "#dc2626", ringColor: "#64748b" },
+                                { pair: 11, tip: "black", ring: "blue", tipColor: "#0f172a", ringColor: "#3b82f6" },
+                                { pair: 12, tip: "black", ring: "orange", tipColor: "#0f172a", ringColor: "#f97316" },
+                                { pair: 13, tip: "black", ring: "green", tipColor: "#0f172a", ringColor: "#16a34a" },
+                                { pair: 14, tip: "black", ring: "brown", tipColor: "#0f172a", ringColor: "#b45309" },
+                                { pair: 15, tip: "black", ring: "slate", tipColor: "#0f172a", ringColor: "#64748b" },
+                                { pair: 16, tip: "yellow", ring: "blue", tipColor: "#facc15", ringColor: "#3b82f6" },
+                                { pair: 17, tip: "yellow", ring: "orange", tipColor: "#facc15", ringColor: "#f97316" },
+                                { pair: 18, tip: "yellow", ring: "green", tipColor: "#facc15", ringColor: "#16a34a" },
+                                { pair: 19, tip: "yellow", ring: "brown", tipColor: "#facc15", ringColor: "#b45309" },
+                                { pair: 20, tip: "yellow", ring: "slate", tipColor: "#facc15", ringColor: "#64748b" },
+                                { pair: 21, tip: "violet", ring: "blue", tipColor: "#9333ea", ringColor: "#3b82f6" },
+                                { pair: 22, tip: "violet", ring: "orange", tipColor: "#9333ea", ringColor: "#f97316" },
+                                { pair: 23, tip: "violet", ring: "green", tipColor: "#9333ea", ringColor: "#16a34a" },
+                                { pair: 24, tip: "violet", ring: "brown", tipColor: "#9333ea", ringColor: "#b45309" },
+                                { pair: 25, tip: "violet", ring: "slate", tipColor: "#9333ea", ringColor: "#64748b" },
                               ];
                               
                               const binderSize = 25;
@@ -604,28 +604,23 @@ export default function Home() {
                                   const feedBinderColor = getColorForBinder(currentFeedBinder);
                                   const distBinderColor = getColorForBinder(currentDistBinder);
                                   
-                                  const feedBinderTipColor = feedBinderColor.tipBg.replace('bg-', '');
-                                  const feedBinderRingColor = feedBinderColor.ringBg.replace('bg-', '');
-                                  const distBinderTipColor = distBinderColor.tipBg.replace('bg-', '');
-                                  const distBinderRingColor = distBinderColor.ringBg.replace('bg-', '');
-                                  
                                   const feedBinderGradient = {
                                     background: `linear-gradient(to right, 
-                                      rgb(var(--${feedBinderTipColor})) 0%, 
-                                      rgb(var(--${feedBinderTipColor})) 33%, 
-                                      rgb(var(--${feedBinderRingColor})) 33%, 
-                                      rgb(var(--${feedBinderRingColor})) 67%, 
-                                      rgb(var(--${feedBinderTipColor})) 67%, 
-                                      rgb(var(--${feedBinderTipColor})) 100%)`
+                                      ${feedBinderColor.tipColor} 0%, 
+                                      ${feedBinderColor.tipColor} 33%, 
+                                      ${feedBinderColor.ringColor} 33%, 
+                                      ${feedBinderColor.ringColor} 67%, 
+                                      ${feedBinderColor.tipColor} 67%, 
+                                      ${feedBinderColor.tipColor} 100%)`
                                   };
                                   const distBinderGradient = {
                                     background: `linear-gradient(to right, 
-                                      rgb(var(--${distBinderTipColor})) 0%, 
-                                      rgb(var(--${distBinderTipColor})) 33%, 
-                                      rgb(var(--${distBinderRingColor})) 33%, 
-                                      rgb(var(--${distBinderRingColor})) 67%, 
-                                      rgb(var(--${distBinderTipColor})) 67%, 
-                                      rgb(var(--${distBinderTipColor})) 100%)`
+                                      ${distBinderColor.tipColor} 0%, 
+                                      ${distBinderColor.tipColor} 33%, 
+                                      ${distBinderColor.ringColor} 33%, 
+                                      ${distBinderColor.ringColor} 67%, 
+                                      ${distBinderColor.tipColor} 67%, 
+                                      ${distBinderColor.tipColor} 100%)`
                                   };
                                   
                                   binderRows.push(
@@ -684,50 +679,41 @@ export default function Home() {
                                   const feedBinderColor = getColorForBinder(feedBinder);
                                   const distBinderColor = getColorForBinder(distBinder);
                                   
-                                  const feedTipColor = feedColor.tipBg.replace('bg-', '');
-                                  const feedRingColor = feedColor.ringBg.replace('bg-', '');
-                                  const distTipColor = distColor.tipBg.replace('bg-', '');
-                                  const distRingColor = distColor.ringBg.replace('bg-', '');
-                                  const feedBinderTipColor = feedBinderColor.tipBg.replace('bg-', '');
-                                  const feedBinderRingColor = feedBinderColor.ringBg.replace('bg-', '');
-                                  const distBinderTipColor = distBinderColor.tipBg.replace('bg-', '');
-                                  const distBinderRingColor = distBinderColor.ringBg.replace('bg-', '');
-                                  
                                   const feedGradient = {
                                     background: `linear-gradient(to right, 
-                                      rgb(var(--${feedTipColor})) 0%, 
-                                      rgb(var(--${feedTipColor})) 33%, 
-                                      rgb(var(--${feedRingColor})) 33%, 
-                                      rgb(var(--${feedRingColor})) 67%, 
-                                      rgb(var(--${feedTipColor})) 67%, 
-                                      rgb(var(--${feedTipColor})) 100%)`
+                                      ${feedColor.tipColor} 0%, 
+                                      ${feedColor.tipColor} 33%, 
+                                      ${feedColor.ringColor} 33%, 
+                                      ${feedColor.ringColor} 67%, 
+                                      ${feedColor.tipColor} 67%, 
+                                      ${feedColor.tipColor} 100%)`
                                   };
                                   const distGradient = {
                                     background: `linear-gradient(to right, 
-                                      rgb(var(--${distTipColor})) 0%, 
-                                      rgb(var(--${distTipColor})) 33%, 
-                                      rgb(var(--${distRingColor})) 33%, 
-                                      rgb(var(--${distRingColor})) 67%, 
-                                      rgb(var(--${distTipColor})) 67%, 
-                                      rgb(var(--${distTipColor})) 100%)`
+                                      ${distColor.tipColor} 0%, 
+                                      ${distColor.tipColor} 33%, 
+                                      ${distColor.ringColor} 33%, 
+                                      ${distColor.ringColor} 67%, 
+                                      ${distColor.tipColor} 67%, 
+                                      ${distColor.tipColor} 100%)`
                                   };
                                   const feedBinderGradient = {
                                     background: `linear-gradient(to right, 
-                                      rgb(var(--${feedBinderTipColor})) 0%, 
-                                      rgb(var(--${feedBinderTipColor})) 33%, 
-                                      rgb(var(--${feedBinderRingColor})) 33%, 
-                                      rgb(var(--${feedBinderRingColor})) 67%, 
-                                      rgb(var(--${feedBinderTipColor})) 67%, 
-                                      rgb(var(--${feedBinderTipColor})) 100%)`
+                                      ${feedBinderColor.tipColor} 0%, 
+                                      ${feedBinderColor.tipColor} 33%, 
+                                      ${feedBinderColor.ringColor} 33%, 
+                                      ${feedBinderColor.ringColor} 67%, 
+                                      ${feedBinderColor.tipColor} 67%, 
+                                      ${feedBinderColor.tipColor} 100%)`
                                   };
                                   const distBinderGradient = {
                                     background: `linear-gradient(to right, 
-                                      rgb(var(--${distBinderTipColor})) 0%, 
-                                      rgb(var(--${distBinderTipColor})) 33%, 
-                                      rgb(var(--${distBinderRingColor})) 33%, 
-                                      rgb(var(--${distBinderRingColor})) 67%, 
-                                      rgb(var(--${distBinderTipColor})) 67%, 
-                                      rgb(var(--${distBinderTipColor})) 100%)`
+                                      ${distBinderColor.tipColor} 0%, 
+                                      ${distBinderColor.tipColor} 33%, 
+                                      ${distBinderColor.ringColor} 33%, 
+                                      ${distBinderColor.ringColor} 67%, 
+                                      ${distBinderColor.tipColor} 67%, 
+                                      ${distBinderColor.tipColor} 100%)`
                                   };
                                   
                                   pairRows.push(
