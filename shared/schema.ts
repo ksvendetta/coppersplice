@@ -3,23 +3,38 @@ import { pgTable, text, varchar, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Fiber color type matching standard fiber optic color codes
-export const fiberColors = [
-  "blue",
-  "orange", 
-  "green",
-  "brown",
-  "slate",
-  "white",
-  "red",
-  "black",
-  "yellow",
-  "violet",
-  "pink",
-  "aqua"
+// 25-pair copper cable color codes (tip/ring combinations)
+// Tip colors: White, Red, Black, Yellow, Violet
+// Ring colors: Blue, Orange, Green, Brown, Slate
+export const pairColors = [
+  { pair: 1, tip: "white", ring: "blue" },
+  { pair: 2, tip: "white", ring: "orange" },
+  { pair: 3, tip: "white", ring: "green" },
+  { pair: 4, tip: "white", ring: "brown" },
+  { pair: 5, tip: "white", ring: "slate" },
+  { pair: 6, tip: "red", ring: "blue" },
+  { pair: 7, tip: "red", ring: "orange" },
+  { pair: 8, tip: "red", ring: "green" },
+  { pair: 9, tip: "red", ring: "brown" },
+  { pair: 10, tip: "red", ring: "slate" },
+  { pair: 11, tip: "black", ring: "blue" },
+  { pair: 12, tip: "black", ring: "orange" },
+  { pair: 13, tip: "black", ring: "green" },
+  { pair: 14, tip: "black", ring: "brown" },
+  { pair: 15, tip: "black", ring: "slate" },
+  { pair: 16, tip: "yellow", ring: "blue" },
+  { pair: 17, tip: "yellow", ring: "orange" },
+  { pair: 18, tip: "yellow", ring: "green" },
+  { pair: 19, tip: "yellow", ring: "brown" },
+  { pair: 20, tip: "yellow", ring: "slate" },
+  { pair: 21, tip: "violet", ring: "blue" },
+  { pair: 22, tip: "violet", ring: "orange" },
+  { pair: 23, tip: "violet", ring: "green" },
+  { pair: 24, tip: "violet", ring: "brown" },
+  { pair: 25, tip: "violet", ring: "slate" },
 ] as const;
 
-export type FiberColor = typeof fiberColors[number];
+export type PairColor = typeof pairColors[number];
 
 // Cable types
 export const cableTypes = ["Feed", "Distribution"] as const;
@@ -29,37 +44,37 @@ export type CableType = typeof cableTypes[number];
 export const cables = pgTable("cables", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  fiberCount: integer("fiber_count").notNull(),
-  ribbonSize: integer("ribbon_size").notNull().default(12), // Always 12, not exposed in UI
+  fiberCount: integer("fiber_count").notNull(), // Now represents pair count
+  ribbonSize: integer("ribbon_size").notNull().default(25), // Now represents binder size (25 pairs per binder)
   type: text("type").notNull(),
 });
 
-// Circuits table - represents circuit IDs and fiber assignments within a cable
-// fiberStart and fiberEnd are auto-calculated based on circuit order
+// Circuits table - represents circuit IDs and pair assignments within a cable
+// fiberStart and fiberEnd are auto-calculated based on circuit order (still named fiber for DB compatibility)
 export const circuits = pgTable("circuits", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   cableId: varchar("cable_id").notNull(),
   circuitId: text("circuit_id").notNull(),
   position: integer("position").notNull(), // Order in the cable (0-indexed)
-  fiberStart: integer("fiber_start").notNull(), // Auto-calculated
-  fiberEnd: integer("fiber_end").notNull(), // Auto-calculated
+  fiberStart: integer("fiber_start").notNull(), // Auto-calculated (represents pair start)
+  fiberEnd: integer("fiber_end").notNull(), // Auto-calculated (represents pair end)
   isSpliced: integer("is_spliced").notNull().default(0), // 0 = not spliced, 1 = spliced
   feedCableId: varchar("feed_cable_id"), // For Distribution cables: which Feed cable this maps to
-  feedFiberStart: integer("feed_fiber_start"), // Which fiber in feed cable (start)
-  feedFiberEnd: integer("feed_fiber_end"), // Which fiber in feed cable (end)
+  feedFiberStart: integer("feed_fiber_start"), // Which pair in feed cable (start)
+  feedFiberEnd: integer("feed_fiber_end"), // Which pair in feed cable (end)
 });
 
-// Splice table - represents a connection between fibers of two cables
+// Splice table - represents a connection between pairs of two cables
 export const splices = pgTable("splices", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   sourceCableId: varchar("source_cable_id").notNull(),
   destinationCableId: varchar("destination_cable_id").notNull(),
-  sourceRibbon: integer("source_ribbon").notNull(),
-  sourceStartFiber: integer("source_start_fiber").notNull(),
-  sourceEndFiber: integer("source_end_fiber").notNull(),
-  destinationRibbon: integer("destination_ribbon").notNull(),
-  destinationStartFiber: integer("destination_start_fiber").notNull(),
-  destinationEndFiber: integer("destination_end_fiber").notNull(),
+  sourceRibbon: integer("source_ribbon").notNull(), // Now represents binder
+  sourceStartFiber: integer("source_start_fiber").notNull(), // Now represents pair start
+  sourceEndFiber: integer("source_end_fiber").notNull(), // Now represents pair end
+  destinationRibbon: integer("destination_ribbon").notNull(), // Now represents binder
+  destinationStartFiber: integer("destination_start_fiber").notNull(), // Now represents pair start
+  destinationEndFiber: integer("destination_end_fiber").notNull(), // Now represents pair end
   ponStart: integer("pon_start"),
   ponEnd: integer("pon_end"),
   isCompleted: integer("is_completed").notNull().default(0),
@@ -76,7 +91,7 @@ export const saves = pgTable("saves", {
 // Insert schemas
 export const insertCableSchema = createInsertSchema(cables).omit({ 
   id: true,
-  ribbonSize: true, // Always default to 12
+  ribbonSize: true, // Always default to 25
 }).extend({
   type: z.enum(cableTypes),
   circuitIds: z.array(z.string()).optional(), // Circuit IDs to create with cable
@@ -92,13 +107,13 @@ export const insertCircuitSchema = createInsertSchema(circuits).omit({
 export const insertSpliceSchema = createInsertSchema(splices).omit({ id: true }).refine(
   (data) => data.sourceStartFiber <= data.sourceEndFiber,
   {
-    message: "Source start fiber must be less than or equal to end fiber",
+    message: "Source start pair must be less than or equal to end pair",
     path: ["sourceEndFiber"],
   }
 ).refine(
   (data) => data.destinationStartFiber <= data.destinationEndFiber,
   {
-    message: "Destination start fiber must be less than or equal to end fiber",
+    message: "Destination start pair must be less than or equal to end pair",
     path: ["destinationEndFiber"],
   }
 ).refine(
@@ -108,7 +123,7 @@ export const insertSpliceSchema = createInsertSchema(splices).omit({ id: true })
     return sourceCount === destCount;
   },
   {
-    message: "Source and destination fiber ranges must be equal in size",
+    message: "Source and destination pair ranges must be equal in size",
     path: ["destinationEndFiber"],
   }
 );
@@ -127,23 +142,23 @@ export type Splice = typeof splices.$inferSelect;
 export type InsertSave = z.infer<typeof insertSaveSchema>;
 export type Save = typeof saves.$inferSelect;
 
-// Helper function to get fiber color by index (0-11 for standard 12-fiber ribbon)
-export function getFiberColor(fiberIndex: number): FiberColor {
-  return fiberColors[fiberIndex % 12];
+// Helper function to get pair color by index (0-24 for standard 25-pair binder)
+export function getPairColor(pairIndex: number): PairColor {
+  return pairColors[pairIndex % 25];
 }
 
-// Helper to get ribbon number for a given fiber (1-indexed)
-export function getRibbonNumber(fiberNumber: number, ribbonSize: number = 12): number {
-  return Math.ceil(fiberNumber / ribbonSize);
+// Helper to get binder number for a given pair (1-indexed)
+export function getBinderNumber(pairNumber: number, binderSize: number = 25): number {
+  return Math.ceil(pairNumber / binderSize);
 }
 
-// Helper to get position within ribbon (0-11)
-export function getFiberPositionInRibbon(fiberNumber: number, ribbonSize: number = 12): number {
-  return ((fiberNumber - 1) % ribbonSize);
+// Helper to get position within binder (0-24)
+export function getPairPositionInBinder(pairNumber: number, binderSize: number = 25): number {
+  return ((pairNumber - 1) % binderSize);
 }
 
-// Helper to parse circuit ID and extract fiber count
-// Examples: "lg,33-36" = 4 fibers, "b,1-2" = 2 fibers, "ks,219-228" = 10 fibers
+// Helper to parse circuit ID and extract pair count
+// Examples: "lg,33-36" = 4 pairs, "b,1-2" = 2 pairs, "ks,219-228" = 10 pairs
 export function parseCircuitId(circuitId: string): number {
   const match = circuitId.match(/(\d+)-(\d+)$/);
   if (!match) {
@@ -193,4 +208,21 @@ export function circuitIdsOverlap(circuitId1: string, circuitId2: string): boole
   } catch {
     return false;
   }
+}
+
+// Helper to get CSS color class for tip/ring colors
+export function getPairColorClass(color: string): string {
+  const colorMap: Record<string, string> = {
+    white: "white",
+    red: "red",
+    black: "black",
+    yellow: "yellow",
+    violet: "violet",
+    blue: "blue",
+    orange: "orange",
+    green: "green",
+    brown: "brown",
+    slate: "slate",
+  };
+  return colorMap[color] || color;
 }
