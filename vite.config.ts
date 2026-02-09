@@ -3,7 +3,10 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export default defineConfig({
+  base: isProduction ? "/CopperMapConnect/" : "/",
   plugins: [
     react(),
     runtimeErrorOverlay(),

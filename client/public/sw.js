@@ -1,9 +1,9 @@
-// Service Worker for Fiber Splice Manager PWA
-const CACHE_NAME = 'fiber-splice-v1';
+// Service Worker for Copper Splice Manager PWA
+const CACHE_NAME = 'copper-splice-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/CopperMapConnect/',
+  '/CopperMapConnect/index.html',
+  '/CopperMapConnect/manifest.json'
 ];
 
 // Install event - cache resources
@@ -27,24 +27,24 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           return response;
         }
-        
+
         // Clone the request
         const fetchRequest = event.request.clone();
-        
+
         return fetch(fetchRequest).then((response) => {
           // Check if valid response
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-          
+
           // Clone the response
           const responseToCache = response.clone();
-          
+
           caches.open(CACHE_NAME)
             .then((cache) => {
               cache.put(event.request, responseToCache);
             });
-          
+
           return response;
         });
       })
