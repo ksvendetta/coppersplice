@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, CheckCircle2, XCircle, Edit2, Check, X, ChevronUp, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { normalizeCircuitId } from "@/lib/circuitIdUtils";
 import {
   Table,
   TableBody,
@@ -295,8 +296,10 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       });
       return;
     }
-    
-    const validation = parseAndCheckCircuitId(editingCircuitValue.trim(), circuitId);
+
+    const normalizedId = normalizeCircuitId(editingCircuitValue.trim());
+
+    const validation = parseAndCheckCircuitId(normalizedId, circuitId);
     if (!validation.valid) {
       toast({
         title: "Invalid Circuit ID",
@@ -305,21 +308,23 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
       });
       return;
     }
-    
-    updateCircuitIdMutation.mutate({ id: circuitId, circuitId: editingCircuitValue });
+
+    updateCircuitIdMutation.mutate({ id: circuitId, circuitId: normalizedId });
   };
 
   const handleAddCircuit = () => {
     if (!circuitId.trim()) {
       toast({
         title: "Missing circuit ID",
-        description: "Please enter a circuit ID (e.g., lg,33-36)",
+        description: 'Please enter a circuit ID (e.g., "lg,33-36" or "lg 33 36")',
         variant: "destructive",
       });
       return;
     }
 
-    const validation = parseAndCheckCircuitId(circuitId.trim());
+    const normalizedId = normalizeCircuitId(circuitId.trim());
+
+    const validation = parseAndCheckCircuitId(normalizedId);
     if (!validation.valid) {
       toast({
         title: "Invalid Circuit ID",
@@ -331,7 +336,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
 
     createCircuitMutation.mutate({
       cableId: cable.id,
-      circuitId: circuitId.trim(),
+      circuitId: normalizedId,
     });
   };
 
@@ -553,7 +558,7 @@ export function CircuitManagement({ cable }: CircuitManagementProps) {
               value={circuitId}
               onChange={(e) => setCircuitId(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAddCircuit()}
-              placeholder="e.g., lg,33-36"
+              placeholder="e.g., lg 33 36"
               className="text-sm"
             />
           </div>

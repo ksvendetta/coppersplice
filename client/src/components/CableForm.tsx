@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertCableSchema, type InsertCable, type Cable, cableTypes } from "@shared/schema";
+import { normalizeCircuitId } from "@/lib/circuitIdUtils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -43,9 +44,20 @@ export function CableForm({ cable, onSubmit, onCancel, isLoading }: CableFormPro
     },
   });
 
+  const handleFormSubmit = (data: InsertCable) => {
+    // Normalize circuit IDs before submitting (supports "pon 1 25" → "pon,1-25")
+    if (data.circuitIds && data.circuitIds.length > 0) {
+      data.circuitIds = data.circuitIds
+        .map(id => id.trim())
+        .filter(id => id.length > 0)
+        .map(id => normalizeCircuitId(id));
+    }
+    onSubmit(data);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="name"
@@ -118,7 +130,7 @@ export function CableForm({ cable, onSubmit, onCancel, isLoading }: CableFormPro
                 <FormLabel>Circuit IDs (Optional)</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Enter circuit IDs, one per line&#10;e.g.,&#10;b,1-2&#10;n,15-16&#10;lg,33-36"
+                    placeholder="Enter circuit IDs, one per line&#10;e.g.,&#10;b 1 2&#10;n 15 16&#10;lg 33 36&#10;or: lg,33-36"
                     value={field.value?.join('\n') || ''}
                     onChange={(e) => {
                       const lines = e.target.value.split('\n');

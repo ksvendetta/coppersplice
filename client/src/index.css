@@ -423,7 +423,9 @@
   }
 
   /* Ensure pair colors print correctly */
-  [style*="background-color"] {
+  [style*="background-color"],
+  [style*="background:"],
+  [style*="background-image"] {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
