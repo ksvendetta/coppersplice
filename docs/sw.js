@@ -1,9 +1,9 @@
 // Service Worker for Copper Splice Manager PWA
 const CACHE_NAME = 'copper-splice-v1';
 const urlsToCache = [
-  '/CopperMapConnect/',
-  '/CopperMapConnect/index.html',
-  '/CopperMapConnect/manifest.json'
+  '/coppersplice/',
+  '/coppersplice/index.html',
+  '/coppersplice/manifest.json'
 ];
 
 // Install event - cache resources

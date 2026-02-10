@@ -6,7 +6,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 const isProduction = process.env.NODE_ENV === "production";
 
 export default defineConfig({
-  base: isProduction ? "/CopperMapConnect/" : "/",
+  base: isProduction ? "/coppersplice/" : "/",
   plugins: [
     react(),
     runtimeErrorOverlay(),
